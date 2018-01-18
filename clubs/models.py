@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-from simple_history.models import HistoricalRecords
-
 
 STATE_CHOICES = (
     ("MN", "Minnesota"),
@@ -47,8 +44,6 @@ class Contact(models.Model):
     alternate_phone = models.CharField(verbose_name="Alternate Phone", max_length=20, blank=True)
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
 
-    # history = HistoricalRecords()
-
     def name(self):
         return "{}, {}".format(self.last_name, self.first_name)
 
@@ -73,8 +68,6 @@ class Club(models.Model):
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
     contacts = models.ManyToManyField(verbose_name="Contacts", to=Contact, through="ClubContact")
 
-    # history = HistoricalRecords()
-
     def __str__(self):
         return self.name
 
@@ -84,8 +77,6 @@ class ClubContact(models.Model):
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING)
     role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
-
-    # history = HistoricalRecords()
 
     def __str__(self):
         return "{} {}: {}".format(self.contact.first_name, self.contact.last_name, self.role)
@@ -99,8 +90,6 @@ class Membership(models.Model):
     payment_code = models.CharField(verbose_name="Code or Number", max_length=20, blank=True)
     create_date = models.DateTimeField(verbose_name="Date Recorded", auto_now_add=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
-
-    # history = HistoricalRecords()
 
     def __str__(self):
         return "{}: {} ({})".format(self.year, self.club.name, self.payment_date)
