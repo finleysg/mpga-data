@@ -7,9 +7,9 @@ class ContactsAdmin(admin.ModelAdmin):
     exclude = ("vkey", )
     readonly_fields = ["name", "first_name", "last_name", "email", "primary_phone", "alternate_phone",
                        "contact_type", "role", "is_primary", ]
-    list_display = ["name", "role", "first_name", "last_name", "is_primary", ]
+    list_display = ["name", "role", "contact_type", "first_name", "last_name", "is_primary", ]
     list_display_links = ["name", ]
-    list_filter = ["role", "is_primary", ]
+    list_filter = ["role", "contact_type", "is_primary", ]
     ordering = ["name", "role", ]
     actions = [export_contacts, ]
 

@@ -7,10 +7,10 @@ STATE_CHOICES = (
 )
 
 CONTACT_TYPE_CHOICES = (
-    ("MC", "Men's Club"),
-    ("FC", "Facilities"),
-    ("AA", "Allied Association"),
-    ("EC", "Executive Committee"),
+    ("Men's Club", "Men's Club"),
+    ("Facilities", "Facilities"),
+    ("Allied Association", "Allied Association"),
+    ("Executive Committee", "Executive Committee"),
 )
 
 CONTACT_ROLE_CHOICES = (
@@ -40,7 +40,7 @@ PAYMENT_TYPE_CHOICES = (
 class Contact(models.Model):
     first_name = models.CharField(verbose_name="First Name", max_length=30)
     last_name = models.CharField(verbose_name="Last Name", max_length=30)
-    contact_type = models.CharField(verbose_name="Contact Type", max_length=3, choices=CONTACT_TYPE_CHOICES, default="UNK")
+    contact_type = models.CharField(verbose_name="Contact Type", max_length=20, choices=CONTACT_TYPE_CHOICES, default="Men's Club")
     primary_phone = models.CharField(verbose_name="Primary Phone", max_length=20, blank=True)
     alternate_phone = models.CharField(verbose_name="Alternate Phone", max_length=20, blank=True)
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
