@@ -1,0 +1,23 @@
+{% block subject %}MPGA Contact Confirmation{% endblock %}
+{% block plain %}
+{{greeting}},
+
+{{intro_text_a}}
+
+{{intro_text_b}}
+
+Current MPGA Contacts for {{club_name}}:
+{% for contact in contacts %}
+{{contact.contact_name}}: {{contact.role_text}}
+ - Email: {{contact.email}}
+ - Primary Phone: {{contact.primary_phone}}
+{% if contact.alternate_phone %}
+ - Alternate Phone: {{contact.alternate_phone}}
+{% endif %}
+{% endfor %}
+
+Thank you for your help,
+
+{{secretary_name}}
+MPGA Secretary
+{% endblock %}

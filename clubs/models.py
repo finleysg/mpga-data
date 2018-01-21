@@ -8,6 +8,9 @@ STATE_CHOICES = (
 
 CONTACT_TYPE_CHOICES = (
     ("MC", "Men's Club"),
+    ("FC", "Facilities"),
+    ("AA", "Allied Association"),
+    ("EC", "Executive Committee"),
     ("PGA", "PGA Professional"),
     ("MGR", "Manager or General Manager"),
     ("DOG", "Director of Golf"),
@@ -16,6 +19,7 @@ CONTACT_TYPE_CHOICES = (
 
 CONTACT_ROLE_CHOICES = (
     ("Director of Golf", "Director of Golf"),
+    ("Event Director", "Event Director"),
     ("General Manager", "General Manager"),
     ("Handicap Chair", "Handicap Chair"),
     ("Manager", "Manager"),
@@ -27,6 +31,7 @@ CONTACT_ROLE_CHOICES = (
     ("Owner", "Owner"),
     ("PGA Professional", "PGA Professional"),
     ("Sr. Match Play Captain", "Sr. Match Play Captain"),
+    ("Superintendent", "Superintendent"),
 )
 
 PAYMENT_TYPE_CHOICES = (

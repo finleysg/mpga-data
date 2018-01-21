@@ -1,0 +1,22 @@
+{% extends "templated_email/email_base.html" %}
+{% block subject %}MPGA Contact Confirmation{% endblock %}
+{% block content %}
+    <p>{{greeting}},</p>
+
+    <p>{{intro_text}}</p>
+
+    <h3>Current MPGA Contacts for {{club_name}}</h3>
+    {% for contact in contacts %}
+        <h4>{{contact.contact_name}}: {{contact.role_text}}</h4>
+        <ul>
+            <li>Email: {{contact.email}}</li>
+            <li>Primary Phone: {{contact.primary_phone}}</li>
+            {% if contact.alternate_phone %}
+            <li>Alternate Phone: {{contact.alternate_phone}}</li>
+            {% endif %}
+        </ul>
+    {% endfor %}
+
+    <p>Thank you for your help,</p>
+    <p>{{secretary_name}}<br/>MPGA Secretary</p>
+{% endblock %}

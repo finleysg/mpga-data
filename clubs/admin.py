@@ -1,5 +1,6 @@
 from django.contrib import admin
 
+from reports.actions import contact_confirmation
 from .models import Club, Contact, ClubContact, Membership, Team
 
 
@@ -29,6 +30,7 @@ class ClubAdmin(admin.ModelAdmin):
     ordering = ["name", ]
     search_fields = ["name", ]
     save_on_top = True
+    # actions = [contact_confirmation, ]
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -47,6 +49,7 @@ class MembershipAdmin(admin.ModelAdmin):
     list_display_links = ["year", ]
     list_filter = ["year", "payment_type", ]
     ordering = ["year", "club", ]
+    # actions = [contact_confirmation, ]
 
 
 class TeamAdmin(admin.ModelAdmin):
