@@ -11,10 +11,6 @@ CONTACT_TYPE_CHOICES = (
     ("FC", "Facilities"),
     ("AA", "Allied Association"),
     ("EC", "Executive Committee"),
-    ("PGA", "PGA Professional"),
-    ("MGR", "Manager or General Manager"),
-    ("DOG", "Director of Golf"),
-    ("UNK", "Unknown"),
 )
 
 CONTACT_ROLE_CHOICES = (
