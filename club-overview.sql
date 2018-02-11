@@ -1,4 +1,4 @@
-CREATE VIEW mpga.club_overview AS
+-- CREATE VIEW mpga.club_overview AS
 SELECT
    mc.id
   ,mc.name

@@ -4,3 +4,8 @@
 * golf@pokegamagolf.com
 * john.stimpach@ci.stpaul.mn.us
 * ptollie1@live.com
+
+## Missing Clubs
+
+ * Greenhaven
+ * Send contact confirmation to Greenhaven and Eastwood

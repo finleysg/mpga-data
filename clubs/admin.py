@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from reports.actions import contact_confirmation
+# from reports.actions import contact_confirmation
+from .actions import export_addresses
 from .models import Club, Contact, ClubContact, Membership, Team
 
 
@@ -30,7 +31,7 @@ class ClubAdmin(admin.ModelAdmin):
     ordering = ["name", ]
     search_fields = ["name", ]
     save_on_top = True
-    # actions = [contact_confirmation, ]
+    actions = [export_addresses, ]
 
 
 class ContactAdmin(admin.ModelAdmin):
