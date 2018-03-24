@@ -19,7 +19,7 @@ INSTALLED_APPS = (
     'report_builder',
     'storages',
     'clubs',
-    'reports',
+    'documents',
 )
 
 MIDDLEWARE = (
@@ -49,15 +49,20 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
             ],
         },
     },
 ]
 
+REPORT_BUILDER_INCLUDE = ['clubs.club', 'clubs.contact', 'clubs.membership', 'clubs.team', 'clubs.GolfCourse', ]
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
 }

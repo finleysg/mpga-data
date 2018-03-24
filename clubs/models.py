@@ -2,7 +2,10 @@ from django.db import models
 
 
 STATE_CHOICES = (
+    ("IA", "Iowa"),
     ("MN", "Minnesota"),
+    ("ND", "North Dakota"),
+    ("SD", "South Dakota"),
     ("WI", "Wisconsin"),
 )
 
@@ -37,6 +40,25 @@ PAYMENT_TYPE_CHOICES = (
 )
 
 
+class GolfCourse(models.Model):
+
+    class Meta:
+        ordering = ["name", ]
+
+    name = models.CharField(verbose_name="Golf Course Name", max_length=200)
+    address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
+    city = models.CharField(verbose_name="City", max_length=40, blank=True)
+    state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
+    zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
+    website = models.CharField(verbose_name="Website", max_length=300, blank=True)
+    email = models.CharField(verbose_name="Email", max_length=250, blank=True)
+    phone = models.CharField(verbose_name="Phone", max_length=20, blank=True)
+    notes = models.TextField(verbose_name="Notes", blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Contact(models.Model):
     first_name = models.CharField(verbose_name="First Name", max_length=30)
     last_name = models.CharField(verbose_name="Last Name", max_length=30)
@@ -44,6 +66,10 @@ class Contact(models.Model):
     primary_phone = models.CharField(verbose_name="Primary Phone", max_length=20, blank=True)
     alternate_phone = models.CharField(verbose_name="Alternate Phone", max_length=20, blank=True)
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
+    address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
+    city = models.CharField(verbose_name="City", max_length=40, blank=True)
+    state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
+    zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
 
     def name(self):
         return "{}, {}".format(self.last_name, self.first_name)
@@ -58,6 +84,7 @@ class Club(models.Model):
         ordering = ["name", ]
 
     name = models.CharField(verbose_name="Club Name", max_length=200)
+    golf_course = models.ForeignKey(verbose_name="Home Course", blank=True, null=True, to=GolfCourse, on_delete=models.DO_NOTHING)
     address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
     city = models.CharField(verbose_name="City", max_length=40, blank=True)
     state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
@@ -78,6 +105,7 @@ class ClubContact(models.Model):
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING)
     role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
+    use_for_mailings = models.BooleanField(verbose_name="Use for Club Mailings", default=False)
 
     def __str__(self):
         return "{} {}: {}".format(self.contact.first_name, self.contact.last_name, self.role)
@@ -105,3 +133,12 @@ class Team(models.Model):
 
     def __str__(self):
         return "{} {}: {}".format(self.year, self.group_name, self.club.name)
+
+
+class ContactImport(models.Model):
+    first_name = models.CharField(verbose_name="First Name", max_length=30)
+    last_name = models.CharField(verbose_name="Last Name", max_length=30)
+    address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
+    city = models.CharField(verbose_name="City", max_length=40, blank=True)
+    state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
+    zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)

@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-# from reports.actions import contact_confirmation
-from .actions import export_addresses
-from .models import Club, Contact, ClubContact, Membership, Team
+from .models import Club, Contact, ClubContact, Membership, Team, GolfCourse
 
 
 class ContactInline(admin.TabularInline):
@@ -11,31 +9,50 @@ class ContactInline(admin.TabularInline):
     extra = 0
 
 
+class GolfCourseAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            "fields": ("name", "email", "phone", "website", "notes", )
+        }),
+        ("Mailing Address", {
+            "fields": ("address_txt", "city", "state", "zip",)
+        }),
+    )
+    list_display = ["name", "city", ]
+    list_display_links = ("name", )
+    ordering = ["name", ]
+    search_fields = ["name", ]
+    save_on_top = True
+
+
 class ClubAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            "fields": (("name", "type_2", ), )
-        }),
-        (None, {
-            "fields": ("website", "club_email", "club_phone", "notes", )
-        }),
-        ("Mailing Address", {
-            "fields": ("address_txt", "city", "state", "zip", )
+            "fields": (("name", "type_2", ), "golf_course", "website", "notes", )
         }),
     )
     inlines = [ContactInline, ]
     exclude = ("contacts", )
-    list_display = ["name", "city", "state", ]
+    list_display = ["name", "type_2", ]
     list_display_links = ("name", )
     list_filter = ("type_2", )
     ordering = ["name", ]
     search_fields = ["name", ]
     save_on_top = True
-    actions = [export_addresses, ]
 
 
 class ContactAdmin(admin.ModelAdmin):
-    fields = ["first_name", "last_name", "contact_type", "email", "primary_phone", "alternate_phone", ]
+    fieldsets = (
+        (None, {
+            "fields": ("first_name", "last_name", "contact_type", )
+        }),
+        ("Contact Information", {
+            "fields": ("email", "primary_phone", "alternate_phone", )
+        }),
+        ("Mailing Address", {
+            "fields": ("address_txt", "city", "state", "zip",)
+        }),
+    )
     list_display = ["name", "email", "contact_type", ]
     list_display_links = ("name", )
     list_filter = ["contact_type", ]
@@ -50,7 +67,6 @@ class MembershipAdmin(admin.ModelAdmin):
     list_display_links = ["year", ]
     list_filter = ["year", "payment_type", ]
     ordering = ["year", "club", ]
-    # actions = [contact_confirmation, ]
 
 
 class TeamAdmin(admin.ModelAdmin):
@@ -61,6 +77,7 @@ class TeamAdmin(admin.ModelAdmin):
     ordering = ["year", "club", ]
 
 
+admin.site.register(GolfCourse, GolfCourseAdmin)
 admin.site.register(Club, ClubAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(Membership, MembershipAdmin)

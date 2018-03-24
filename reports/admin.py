@@ -50,7 +50,7 @@ class TeamCaptainsAdmin(admin.ModelAdmin):
         extra_context['title'] = 'View Team Captain'
         return super(TeamCaptainsAdmin, self).changeform_view(request, object_id, extra_context=extra_context)
 
-
-admin.site.register(PrimaryContacts, ContactsAdmin)
-admin.site.register(AllContacts, ContactsAdmin)
-admin.site.register(TeamCaptains, TeamCaptainsAdmin)
+#
+# admin.site.register(PrimaryContacts, ContactsAdmin)
+# admin.site.register(AllContacts, ContactsAdmin)
+# admin.site.register(TeamCaptains, TeamCaptainsAdmin)
