@@ -27,3 +27,4 @@ mpga/wsgi.py
 mpga-data.iml
 
 db-backup.sh
+*.sql

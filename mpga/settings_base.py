@@ -18,6 +18,7 @@ INSTALLED_APPS = (
     'simple_history',
     'report_builder',
     'storages',
+    'imagekit',
     'clubs',
     'documents',
 )
