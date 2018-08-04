@@ -11,9 +11,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_auth.registration',
     'corsheaders',
     'simple_history',
     'report_builder',
@@ -34,6 +39,8 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
 )
+
+SITE_ID = 1
 
 ROOT_URLCONF = 'mpga.urls'
 
@@ -60,16 +67,16 @@ TEMPLATES = [
 REPORT_BUILDER_INCLUDE = ['clubs.club', 'clubs.contact', 'clubs.membership', 'clubs.team', 'clubs.GolfCourse', ]
 
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
+    'EXCEPTION_HANDLER': 'clubs.exception_handler.custom_exception_handler',
 }
 
 # REST_AUTH_SERIALIZERS = {
-#     'USER_DETAILS_SERIALIZER': 'core.serializers.UserDetailSerializer'
+#     'USER_DETAILS_SERIALIZER': 'club.serializers.UserDetailSerializer'
 # }
 
 CORS_ORIGIN_ALLOW_ALL = True

@@ -15,10 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.views.generic import TemplateView
+
+from clubs import urls as api_urls
 
 admin.site.site_header = "MPGA Administration"
 
 urlpatterns = [
     url(r"^admin/", include(admin.site.urls)),
+    url(r"^api/", include(api_urls)),
     url(r'^report_builder/', include('report_builder.urls')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    # this url is used to generate a password reset email
+    url(r'^member/reset-password-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        TemplateView.as_view(template_name="password_reset_confirm.html"),
+        name='password_reset_confirm'),
 ]

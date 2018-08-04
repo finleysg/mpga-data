@@ -2,7 +2,6 @@
 select c.name, c.website, case when m.club_id is not null then 100.00 else null end, m.notes, m.payment_code, m.payment_date
 from `mpgagolf$mpga`.clubs_club as c
 left join `mpgagolf$mpga`.clubs_membership as m on c.id = m.club_id and m.`year` = 2018
-where c.id <> 25
 order by c.name
 
 -- CY Contact

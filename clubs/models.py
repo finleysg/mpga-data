@@ -70,6 +70,7 @@ class Contact(models.Model):
     city = models.CharField(verbose_name="City", max_length=40, blank=True)
     state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
     zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
+    notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
     def name(self):
         return "{}, {}".format(self.last_name, self.first_name)
@@ -101,8 +102,8 @@ class Club(models.Model):
 
 
 class ClubContact(models.Model):
-    club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING)
-    contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING)
+    club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_to_contact")
+    contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING, related_name="contact_to_club")
     role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
     use_for_mailings = models.BooleanField(verbose_name="Use for Club Mailings", default=False)
@@ -113,7 +114,7 @@ class ClubContact(models.Model):
 
 class Membership(models.Model):
     year = models.IntegerField(verbose_name="Golf Season")
-    club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING)
+    club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="memberships")
     payment_date = models.DateField(verbose_name="Payment Date")
     payment_type = models.CharField(verbose_name="Payment Type", max_length=2, choices=PAYMENT_TYPE_CHOICES, default="CK")
     payment_code = models.CharField(verbose_name="Code or Number", max_length=20, blank=True)
@@ -130,15 +131,7 @@ class Team(models.Model):
     contact = models.ForeignKey(verbose_name="Captain", to=Contact, on_delete=models.DO_NOTHING, null=True)
     group_name = models.CharField(verbose_name="Group", max_length=20)
     is_senior = models.BooleanField(verbose_name="Senior")
+    notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
     def __str__(self):
         return "{} {}: {}".format(self.year, self.group_name, self.club.name)
-
-
-class ContactImport(models.Model):
-    first_name = models.CharField(verbose_name="First Name", max_length=30)
-    last_name = models.CharField(verbose_name="Last Name", max_length=30)
-    address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
-    city = models.CharField(verbose_name="City", max_length=40, blank=True)
-    state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
-    zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
