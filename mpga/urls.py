@@ -2,33 +2,55 @@
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
+from rest_framework.routers import DefaultRouter
 
-from clubs import urls as api_urls
+from clubs import views as club_views
+from communication import views as communication_views
+from core import views as core_views
+from documents import views as document_views
+from events import views as event_views
+from pages import views as page_views
+from policies import views as policy_views
+from register import views as registration_views
 
 admin.site.site_header = "MPGA Administration"
 
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r"courses", club_views.GolfCourseViewSet, "courses")
+router.register(r"contacts", club_views.ContactViewSet, "contacts")
+router.register(r"clubs", club_views.ClubViewSet, "clubs")
+router.register(r"memberships", club_views.MembershipViewSet, "memberships")
+router.register(r"teams", club_views.TeamViewSet, "teams")
+router.register(r"announcements", communication_views.AnnouncementViewSet, "announcements")
+router.register(r"members", core_views.MemberViewSet, "members")
+router.register(r"settings", core_views.SettingsViewSet, "settings")
+router.register(r"documents", document_views.DocumentViewSet, "documents")
+router.register(r"photos", document_views.PhotoViewSet, "photos")
+router.register(r"events", event_views.EventViewSet, "events"),
+router.register(r"event-policies", event_views.EventPolicyViewSet, "event-policies")
+router.register(r"event-points", event_views.EventPointsViewSet, "event-points")
+router.register(r"event-chairs", event_views.EventChairViewSet, "event-chairs")
+router.register(r"awards", event_views.AwardViewSet, "awards"),
+router.register(r"award-winners", event_views.AwardWinnerViewSet, "award-winners"),
+router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
+router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
+router.register(r"pages", page_views.LandingPageViewSet, "pages")
+router.register(r"policies", policy_views.PolicyViewSet, "policies")
+router.register(r"registrations", registration_views.RegistrationViewSet, "registrations")
+router.register(r"registration-groups", registration_views.RegistrationGroupViewSet, "registration-groups")
+
 urlpatterns = [
-    url(r"^admin/", include(admin.site.urls)),
-    url(r"^api/", include(api_urls)),
-    url(r'^report_builder/', include('report_builder.urls')),
-    url(r'^rest-auth/', include('rest_auth.urls')),
-    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r"^api/", include(router.urls)),
+    url(r"^admin/", admin.site.urls),
+    url(r"^rest-auth/", include("rest_auth.urls")),
+    url(r"^rest-auth/registration/", include("rest_auth.registration.urls")),
     # this url is used to generate a password reset email
-    url(r'^member/reset-password-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+    url(r"^member/reset-password-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
         TemplateView.as_view(template_name="password_reset_confirm.html"),
-        name='password_reset_confirm'),
+        name="password_reset_confirm"),
 ]

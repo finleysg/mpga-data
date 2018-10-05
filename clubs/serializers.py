@@ -103,7 +103,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "website", "type_2", "notes", "golf_course", )
+        fields = ("id", "name", "website", "type_2", "notes", "size", "golf_course", )
 
 
 class MembershipDetailSerializer(serializers.ModelSerializer):
@@ -150,29 +150,30 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class TeamDetailSerializer(serializers.ModelSerializer):
 
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
     contact = ContactSerializer()
 
     class Meta:
         model = Team
-        fields = ("id", "year", "club_id", "contact", "group_name", "is_senior", "notes", )
+        fields = ("id", "year", "club", "contact", "group_name", "is_senior", "notes", )
 
     def create(self, validated_data):
         contact = validated_data.get("contact", None)
         year = validated_data.pop("year")
-        club_id = validated_data.pop("club_id")
-        contact_id = contact.id if contact is not None else None
+        club = validated_data.pop("club")
+        # contact_id = contact.id if contact is not None else None
         group_name = validated_data.pop("group_name")
         is_senior = validated_data.get("is_senior", False)
         notes = validated_data.get("notes", None)
 
-        team = Team(year=year, club_id=club_id, contact_id=contact_id, group_name=group_name, is_senior=is_senior, notes=notes)
+        team = Team(year=year, club=club, contact=contact.id, group_name=group_name, is_senior=is_senior, notes=notes)
         team.save()
         return team
 
     def update(self, instance, validated_data):
         instance.year = validated_data.get("year", instance.year)
-        instance.club_id = validated_data.get("club_id", instance.club_id)
-        instance.contact_id = validated_data.get("contact_id", instance.contact_id)
+        instance.club = validated_data.get("club_id", instance.club)
+        instance.contact = validated_data.get("contact_id", instance.contact)
         instance.group_name = validated_data.get("group_name", instance.group_name)
         instance.is_senior = validated_data.get("is_senior", instance.is_senior)
         instance.notes = validated_data.get("notes", instance.notes)
@@ -192,24 +193,22 @@ class TeamSerializer(serializers.ModelSerializer):
 
 
 class ClubContactSerializer(serializers.ModelSerializer):
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
+    contact = ContactSerializer()
 
     class Meta:
         model = ClubContact
-        fields = ("id", "club_id", "contact_id", "role", "is_primary", "use_for_mailings", )
+        fields = ("id", "club", "contact", "role", "is_primary", "use_for_mailings", )
 
 
 class ClubDetailSerializer(serializers.ModelSerializer):
 
     golf_course = GolfCourseSerializer()
-    contacts = ContactSerializer(many=True, read_only=True)
-    memberships = MembershipDetailSerializer(many=True, read_only=True)
-    teams = TeamDetailSerializer(many=True, read_only=True)
-    club_to_contact = ClubContactSerializer(many=True)
+    club_contacts = ClubContactSerializer(many=True)
 
     class Meta:
         model = Club
-        fields = ("id", "name", "golf_course", "website", "type_2", "notes",
-                  "contacts", "club_to_contact", "memberships", "teams", )
+        fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
 
     def create(self, validated_data):
         name = validated_data.pop("name")
@@ -224,14 +223,14 @@ class ClubDetailSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
-        instance.address_txt = validated_data.get("address_txt", instance.address_txt)
-        instance.city = validated_data.get("city", instance.city)
-        instance.state = validated_data.get("state", instance.state)
-        instance.zip = validated_data.get("zip", instance.zip)
-        instance.website = validated_data.get("website", instance.website)
-        instance.email = validated_data.get("email", instance.email)
-        instance.phone = validated_data.get("phone", instance.phone)
-        instance.notes = validated_data.get("notes", instance.notes)
+        # instance.address_txt = validated_data.get("address_txt", instance.address_txt)
+        # instance.city = validated_data.get("city", instance.city)
+        # instance.state = validated_data.get("state", instance.state)
+        # instance.zip = validated_data.get("zip", instance.zip)
+        # instance.website = validated_data.get("website", instance.website)
+        # instance.email = validated_data.get("email", instance.email)
+        # instance.phone = validated_data.get("phone", instance.phone)
+        # instance.notes = validated_data.get("notes", instance.notes)
         instance.save()
 
         return instance

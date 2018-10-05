@@ -28,7 +28,7 @@ class GolfCourseAdmin(admin.ModelAdmin):
 class ClubAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            "fields": (("name", "type_2", ), "golf_course", "website", "notes", )
+            "fields": (("name", "type_2", ), "golf_course", "website", "size", "notes", )
         }),
     )
     inlines = [ContactInline, ]

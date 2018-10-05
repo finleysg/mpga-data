@@ -31,6 +31,8 @@ CONTACT_ROLE_CHOICES = (
     ("PGA Professional", "PGA Professional"),
     ("Sr. Match Play Captain", "Sr. Match Play Captain"),
     ("Superintendent", "Superintendent"),
+    ("Tournament Player", "Tournament Player"),
+    ("Other", "Other"),
 )
 
 PAYMENT_TYPE_CHOICES = (
@@ -86,14 +88,9 @@ class Club(models.Model):
 
     name = models.CharField(verbose_name="Club Name", max_length=200)
     golf_course = models.ForeignKey(verbose_name="Home Course", blank=True, null=True, to=GolfCourse, on_delete=models.DO_NOTHING)
-    address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
-    city = models.CharField(verbose_name="City", max_length=40, blank=True)
-    state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
-    zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
     website = models.CharField(verbose_name="Website", max_length=300, blank=True)
-    club_email = models.CharField(verbose_name="Club Email", max_length=250, blank=True)
-    club_phone = models.CharField(verbose_name="Club Phone", max_length=20, blank=True)
     type_2 = models.BooleanField(verbose_name="Type 2", default=False)
+    size = models.IntegerField(verbose_name="Number of Members", blank=True, null=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
     contacts = models.ManyToManyField(verbose_name="Contacts", to=Contact, through="ClubContact")
 
@@ -102,7 +99,7 @@ class Club(models.Model):
 
 
 class ClubContact(models.Model):
-    club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_to_contact")
+    club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_contacts")
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING, related_name="contact_to_club")
     role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)

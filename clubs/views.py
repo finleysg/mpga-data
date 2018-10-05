@@ -1,40 +1,29 @@
-from rest_framework import generics, permissions
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from .models import *
 from .serializers import *
 
 
-@api_view(("GET",))
-@permission_classes((permissions.AllowAny,))
-def api_root(request):
-    return Response({
-        "courses": reverse("course-list", request=request),
-        "contacts": reverse("contact-list", request=request),
-        "clubs": reverse("club-list", request=request),
-        "memberships": reverse("membership-list", request=request),
-        "teams": reverse("team-list", request=request),
-    })
+# @api_view(("GET",))
+# @permission_classes((permissions.AllowAny,))
+# def api_root(request):
+#     return Response({
+#         "courses": reverse("course-list", request=request),
+#         "contacts": reverse("contact-list", request=request),
+#         "clubs": reverse("club-list", request=request),
+#         "memberships": reverse("membership-list", request=request),
+#         "teams": reverse("team-list", request=request),
+#     })
 
 
-class GolfCourseDetail(generics.RetrieveUpdateDestroyAPIView):
+class GolfCourseViewSet(viewsets.ModelViewSet):
     serializer_class = GolfCourseDetailSerializer
     queryset = GolfCourse.objects.all()
 
 
-class GolfCourseList(generics.ListCreateAPIView):
-    serializer_class = GolfCourseDetailSerializer
-    queryset = GolfCourse.objects.all()
-
-
-class ContactDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ContactDetailSerializer
-    queryset = Contact.objects.all()
-
-
-class ContactList(generics.ListCreateAPIView):
+class ContactViewSet(viewsets.ModelViewSet):
     serializer_class = ContactDetailSerializer
 
     def get_queryset(self):
@@ -48,22 +37,12 @@ class ContactList(generics.ListCreateAPIView):
         return queryset.order_by("last_name", "first_name", )
 
 
-class ClubDetail(generics.RetrieveUpdateDestroyAPIView):
+class ClubViewSet(viewsets.ModelViewSet):
     serializer_class = ClubDetailSerializer
     queryset = Club.objects.all()
 
 
-class ClubList(generics.ListCreateAPIView):
-    serializer_class = ClubDetailSerializer
-    queryset = Club.objects.all()
-
-
-class MembershipDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = MembershipDetailSerializer
-    queryset = Membership.objects.all()
-
-
-class MembershipList(generics.ListCreateAPIView):
+class MembershipViewSet(viewsets.ModelViewSet):
     serializer_class = MembershipSerializer
 
     def get_queryset(self):
@@ -74,12 +53,7 @@ class MembershipList(generics.ListCreateAPIView):
         return queryset
 
 
-class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = TeamDetailSerializer
-    queryset = Team.objects.all()
-
-
-class TeamList(generics.ListCreateAPIView):
+class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
 
     def get_queryset(self):
