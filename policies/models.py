@@ -5,8 +5,11 @@ POLICY_TYPE_CHOICES = (
     ("LR", "Local Rule"),
     ("CC", "Code of Conduct"),
     ("AU", "About Us"),
+    ("SP", "Senior Match Play"),
     ("MP", "Match Play"),
     ("TN", "Tournament"),
+    ("TP", "Tournament Player Information"),
+    ("PP", "Pace of Play"),
     ("OX", "Other"),
 )
 
