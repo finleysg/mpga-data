@@ -13,5 +13,4 @@ is_development = os.getenv("DEVELOPMENT", False)
 if to_bool(is_development):
     from .settings_development import *
 else:
-    from .settings_development import *
-    # from .settings_production import *
+    from .settings_production import *
