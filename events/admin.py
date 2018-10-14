@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import *
 
 
-class PolicyInline(admin.StackedInline):
+class PolicyInline(admin.TabularInline):
     model = EventPolicy
     can_delete = True
     extra = 0
@@ -11,18 +11,39 @@ class PolicyInline(admin.StackedInline):
     fields = ["policy", "order", ]
 
 
-class PointsInline(admin.StackedInline):
+class PointsInline(admin.TabularInline):
     model = EventPoints
     can_delete = True
     extra = 0
     fields = ["place", "points", ]
 
 
-class ChairInline(admin.StackedInline):
+class LinksInLine(admin.TabularInline):
+    model = EventLink
+    can_delete = True
+    extra = 0
+    fields = ["link_type", "url", ]
+
+
+class ChairInline(admin.TabularInline):
     model = EventChair
     can_delete = True
     extra = 0
     fields = ["chair", ]
+
+
+class DivisionInline(admin.TabularInline):
+    model = EventDivision
+    can_delete = True
+    extra = 0
+    fields = ["division", ]
+
+
+class FeeInline(admin.TabularInline):
+    model = EventFee
+    can_delete = True
+    extra = 0
+    fields = ["fee_type", "amount", ]
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -44,7 +65,7 @@ class EventAdmin(admin.ModelAdmin):
         }),
     )
 
-    inlines = [PolicyInline, PointsInline, ChairInline, ]
+    inlines = [FeeInline, PolicyInline, DivisionInline, PointsInline, ChairInline, LinksInLine, ]
     list_display = ["name", "start_date", ]
     list_display_links = ("name", )
     list_filter = ("start_date", "event_type", )

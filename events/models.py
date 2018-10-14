@@ -29,6 +29,22 @@ FLIGHT_CHOICES = (
     ("Sixth Flight", "Sixth Flight"),
 )
 
+LINK_TYPE_CHOICES = (
+    ("Results", "Results"),
+    ("Tee Times", "Tee Times"),
+    ("Registration", "Registration"),
+    ("Media", "Media"),
+    ("Other", "Other"),
+)
+
+DIVISION_CHOICES = (
+    ("Championship", "Championship"),
+    ("Net", "Net"),
+    ("Super-Senior", "Super-Senior"),
+    ("Senior", "Senior"),
+    ("Flighted", "Flighted"),
+)
+
 
 class Award(models.Model):
     name = models.CharField(verbose_name="Award Name", max_length=100)
@@ -52,22 +68,30 @@ class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament Name", max_length=100)
     description = models.TextField(verbose_name="Description")
 
+    class Meta:
+        verbose_name = 'Championship Overview'
+        verbose_name_plural = 'Championship Overviews'
+
     def __str__(self):
         return self.name
 
 
 class TournamentWinner(models.Model):
     year = models.IntegerField(verbose_name="Year")
-    tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, on_delete=DO_NOTHING, related_name="winners")
+    tournament = models.ForeignKey(verbose_name="Championship", to=Tournament, on_delete=DO_NOTHING, related_name="winners")
     location = models.CharField(verbose_name="Location", max_length=100)
-    winner = models.CharField(verbose_name="Tournament Winner", max_length=100)
+    winner = models.CharField(verbose_name="Winner", max_length=100)
     winner_club = models.CharField(verbose_name="Club", max_length=100)
-    co_winner = models.CharField(verbose_name="Tournament Winner", max_length=100, blank=True)
+    co_winner = models.CharField(verbose_name="Winner", max_length=100, blank=True)
     co_winner_club = models.CharField(verbose_name="Club", max_length=100, blank=True)
     flight_or_division = models.CharField(verbose_name="Flight or Division", max_length=20, choices=FLIGHT_CHOICES)
     score = models.CharField(verbose_name="Score", max_length=20, blank=True)
     is_net = models.BooleanField(verbose_name="Score is a Net Score", default=False)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Championship Winner'
+        verbose_name_plural = 'Championship Winners'
 
     def __str__(self):
         return "{} {}".format(self.year, self.tournament)
@@ -75,7 +99,7 @@ class TournamentWinner(models.Model):
 
 class Event(models.Model):
     location = models.ForeignKey(verbose_name="Location", to=GolfCourse, on_delete=DO_NOTHING)
-    tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, on_delete=DO_NOTHING, blank=True, null=True)
+    tournament = models.ForeignKey(verbose_name="Championship", to=Tournament, on_delete=DO_NOTHING, blank=True, null=True)
     event_type = models.CharField(verbose_name="Event type", choices=EVENT_TYPE_CHOICES, max_length=1, default="T")
     name = models.CharField(verbose_name="Event title", max_length=100)
     description = models.TextField(verbose_name="Format and rules")
@@ -95,6 +119,10 @@ class Event(models.Model):
     registration_url = models.CharField(verbose_name="Registration Portal", max_length=240, blank=True, null=True)
 
     history = HistoricalRecords()
+
+    class Meta:
+        verbose_name = 'Championship or Other Event'
+        verbose_name_plural = 'Championships and Other Events'
 
     def __str__(self):
         return self.name
@@ -135,3 +163,29 @@ class EventPolicy(models.Model):
 
     def __str__(self):
         return "{}: {}".format(self.event.name, self.policy.name)
+
+
+class EventDivision(models.Model):
+    event = models.ForeignKey(verbose_name="Event", to=Event, on_delete=CASCADE, related_name="divisions")
+    division = models.CharField(verbose_name="Division", max_length=20, choices=DIVISION_CHOICES)
+
+    def __str__(self):
+        return "{}: {}".format(self.event.name, self.division)
+
+
+class EventLink(models.Model):
+    event = models.ForeignKey(verbose_name="Event", to=Event, on_delete=CASCADE, related_name="links")
+    link_type = models.CharField(verbose_name="Link Type", max_length=40, choices=LINK_TYPE_CHOICES)
+    url = models.CharField(verbose_name="Full Url", max_length=240)
+
+    def __str__(self):
+        return "{}: {} link".format(self.event.name, self.link_type)
+
+
+class EventFee(models.Model):
+    event = models.ForeignKey(verbose_name="Event", to=Event, on_delete=CASCADE, related_name="fees")
+    fee_type = models.CharField(verbose_name="Fee Type", max_length=30)
+    amount = models.DecimalField(verbose_name="Amount", max_digits=5, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return "{}: {}".format(self.event.name, self.fee_type)

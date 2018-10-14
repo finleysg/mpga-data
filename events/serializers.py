@@ -62,6 +62,30 @@ class EventPolicySerializer(serializers.ModelSerializer):
         fields = ("id", "event", "policy", "order", )
 
 
+class EventDivisionSerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = EventDivision
+        fields = ("id", "event", "division", )
+
+
+class EventFeeSerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = EventFee
+        fields = ("id", "event", "fee_type", "amount", )
+
+
+class EventLinkSerializer(serializers.ModelSerializer):
+    event = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = EventLink
+        fields = ("id", "event", "link_type", "url", )
+
+
 class EventDetailSerializer(serializers.ModelSerializer):
 
     location = GolfCourseSerializer()
@@ -71,6 +95,9 @@ class EventDetailSerializer(serializers.ModelSerializer):
     policies = EventPolicySerializer(many=True)
     chairs = EventChairSerializer(many=True)
     player_points = EventPointsSerializer(many=True)
+    divisions = EventDivisionSerializer(many=True)
+    links = EventLinkSerializer(many=True)
+    fees = EventFeeSerializer(many=True)
 
     class Meta:
         model = Event
@@ -78,4 +105,5 @@ class EventDetailSerializer(serializers.ModelSerializer):
                   "minimum_signup_group_size", "maximum_signup_group_size", "tournament",
                   "registration_url", "registration_type", "portal_url", "notes", "event_type", "alt_event_fee",
                   "start_date", "registration_start", "registration_end", "early_registration_end",
-                  "registration_maximum", "documents", "registrations", "policies", "chairs", "player_points", )
+                  "registration_maximum", "documents", "registrations", "policies", "chairs", "player_points",
+                  "divisions", "links", "fees", )

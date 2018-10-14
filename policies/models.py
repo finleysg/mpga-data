@@ -23,5 +23,9 @@ class Policy(models.Model):
 
     history = HistoricalRecords()
 
+    class Meta:
+        verbose_name = 'Policy'
+        verbose_name_plural = 'Policies'
+
     def __str__(self):
         return self.name

@@ -11,7 +11,7 @@ class RegistrationInline(admin.TabularInline):
     model = Registration
     can_delete = True
     extra = 0
-    fields = ["member", "is_event_fee_paid", "event_fee", ]
+    fields = ["participant", "is_event_fee_paid", "event_fee", ]
 
 
 class RegistrationGroupAdmin(admin.ModelAdmin):
@@ -32,7 +32,7 @@ class RegistrationGroupAdmin(admin.ModelAdmin):
     )
     inlines = [RegistrationInline, ]
 
-    list_display = ["id", "signed_up_by", "members", "payment_confirmation_timestamp", "event", ]
+    list_display = ["id", "signed_up_by", "players", "payment_confirmation_timestamp", "event", ]
     list_display_links = ("id", )
     list_select_related = ("signed_up_by", "event", )
     ordering = ["signed_up_by"]
