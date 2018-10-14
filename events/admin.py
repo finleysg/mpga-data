@@ -22,7 +22,7 @@ class LinksInLine(admin.TabularInline):
     model = EventLink
     can_delete = True
     extra = 0
-    fields = ["link_type", "url", ]
+    fields = ["link_type", "title", "url", ]
 
 
 class ChairInline(admin.TabularInline):
@@ -43,14 +43,13 @@ class FeeInline(admin.TabularInline):
     model = EventFee
     can_delete = True
     extra = 0
-    fields = ["fee_type", "amount", ]
+    fields = ["fee_type", "amount", "ec_only", ]
 
 
 class EventAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Basic Settings and Fees", {
-            "fields": ("name", "location", ("event_type", "tournament", "start_date", "rounds", ),
-                       ("event_fee", "alt_event_fee", ), )
+            "fields": ("name", "location", ("event_type", "tournament", "start_date", "rounds", ), )
         }),
         ("Format and Notes", {
             "classes": ("wide",),
@@ -59,9 +58,6 @@ class EventAdmin(admin.ModelAdmin):
         ("Registration", {
             "fields":  (("registration_start", "early_registration_end", "registration_end", ),
                        ("registration_maximum", "minimum_signup_group_size", "maximum_signup_group_size", ))
-        }),
-        ("Other", {
-            "fields": ("registration_url", "portal_url", )
         }),
     )
 

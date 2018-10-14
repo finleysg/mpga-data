@@ -75,7 +75,7 @@ class EventFeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventFee
-        fields = ("id", "event", "fee_type", "amount", )
+        fields = ("id", "event", "fee_type", "amount", "ec_only", )
 
 
 class EventLinkSerializer(serializers.ModelSerializer):
@@ -83,7 +83,7 @@ class EventLinkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EventLink
-        fields = ("id", "event", "link_type", "url", )
+        fields = ("id", "event", "link_type", "title", "url", )
 
 
 class EventDetailSerializer(serializers.ModelSerializer):
@@ -101,9 +101,9 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "location", "name", "description", "rounds", "event_fee",
+        fields = ("id", "location", "name", "description", "rounds",
                   "minimum_signup_group_size", "maximum_signup_group_size", "tournament",
-                  "registration_url", "registration_type", "portal_url", "notes", "event_type", "alt_event_fee",
+                  "registration_type", "notes", "event_type",
                   "start_date", "registration_start", "registration_end", "early_registration_end",
                   "registration_maximum", "documents", "registrations", "policies", "chairs", "player_points",
                   "divisions", "links", "fees", )

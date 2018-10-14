@@ -6,7 +6,7 @@ from clubs.models import GolfCourse, Contact
 from policies.models import Policy
 
 EVENT_TYPE_CHOICES = (
-    ("T", "Tournament"),
+    ("T", "Championship"),
     ("B", "Banquet"),
     ("M", "Meeting"),
 )
@@ -34,7 +34,6 @@ LINK_TYPE_CHOICES = (
     ("Tee Times", "Tee Times"),
     ("Registration", "Registration"),
     ("Media", "Media"),
-    ("Other", "Other"),
 )
 
 DIVISION_CHOICES = (
@@ -103,8 +102,6 @@ class Event(models.Model):
     event_type = models.CharField(verbose_name="Event type", choices=EVENT_TYPE_CHOICES, max_length=1, default="T")
     name = models.CharField(verbose_name="Event title", max_length=100)
     description = models.TextField(verbose_name="Format and rules")
-    event_fee = models.DecimalField(verbose_name="Event fee", max_digits=5, decimal_places=2, default=0.00)
-    alt_event_fee = models.DecimalField(verbose_name="Alternative event fee", max_digits=5, decimal_places=2, default=0.00)
     minimum_signup_group_size = models.IntegerField(verbose_name="Minimum registration group size", default=1)
     maximum_signup_group_size = models.IntegerField(verbose_name="Maximum registration group size", default=1)
     registration_type = models.CharField(verbose_name="Registration type", choices=REGISTRATION_TYPE_CHOICES, max_length=1, default="1")
@@ -115,8 +112,6 @@ class Event(models.Model):
     early_registration_end = models.DateTimeField(verbose_name="Early registration end", blank=True, null=True)
     registration_end = models.DateTimeField(verbose_name="Registration end", blank=True, null=True)
     registration_maximum = models.IntegerField(verbose_name="Registration maximum", default=0)
-    portal_url = models.CharField(verbose_name="Golf Genius Portal", max_length=240, blank=True, null=True)
-    registration_url = models.CharField(verbose_name="Registration Portal", max_length=240, blank=True, null=True)
 
     history = HistoricalRecords()
 
@@ -176,6 +171,7 @@ class EventDivision(models.Model):
 class EventLink(models.Model):
     event = models.ForeignKey(verbose_name="Event", to=Event, on_delete=CASCADE, related_name="links")
     link_type = models.CharField(verbose_name="Link Type", max_length=40, choices=LINK_TYPE_CHOICES)
+    title = models.CharField(verbose_name="Title", max_length=60, default="TM Portal")
     url = models.CharField(verbose_name="Full Url", max_length=240)
 
     def __str__(self):
@@ -186,6 +182,7 @@ class EventFee(models.Model):
     event = models.ForeignKey(verbose_name="Event", to=Event, on_delete=CASCADE, related_name="fees")
     fee_type = models.CharField(verbose_name="Fee Type", max_length=30)
     amount = models.DecimalField(verbose_name="Amount", max_digits=5, decimal_places=2, default=0.00)
+    ec_only = models.BooleanField(verbose_name="Only EC members see this", default=False)
 
     def __str__(self):
         return "{}: {}".format(self.event.name, self.fee_type)
