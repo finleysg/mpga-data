@@ -17,8 +17,6 @@ class Member(models.Model):
     user = models.OneToOneField(User, on_delete=CASCADE)
     home_club = models.ForeignKey(verbose_name="Home club", to=Club, blank=True, null=True, on_delete=DO_NOTHING)
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, blank=True, null=True, on_delete=DO_NOTHING)
-    ghin = models.CharField(verbose_name="GHIN", max_length=7, blank=True, null=True)
-    birth_date = models.DateField(verbose_name="Birth date", blank=True, null=True)
 
     history = HistoricalRecords()
 
@@ -35,12 +33,6 @@ class Member(models.Model):
         return len(self.user.email) > 0 and \
                "@" in self.user.email and \
                not self.user.email.endswith("fake.com")
-
-    def age(self):
-        my_age = 0
-        if self.birth_date:
-            my_age = (datetime.utcnow() - self.birth_date).total_years()
-        return my_age
 
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)

@@ -3,7 +3,7 @@ from policies.models import Policy
 
 
 class PolicyAdmin(admin.ModelAdmin):
-    fields = ["policy_type", "version", "name", "title", "description", ]
+    fields = ["policy_type", "name", "title", "description", ]
     list_display = ["name", "title", "policy_type", ]
     list_filter = ("policy_type", )
     save_on_top = True

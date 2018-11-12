@@ -101,6 +101,7 @@ class Event(models.Model):
     tournament = models.ForeignKey(verbose_name="Championship", to=Tournament, on_delete=DO_NOTHING, blank=True, null=True)
     event_type = models.CharField(verbose_name="Event type", choices=EVENT_TYPE_CHOICES, max_length=1, default="T")
     name = models.CharField(verbose_name="Event title", max_length=100)
+    short_name = models.CharField(verbose_name="Short name for menus", max_length=40, blank=True, null=True)
     description = models.TextField(verbose_name="Format and rules")
     minimum_signup_group_size = models.IntegerField(verbose_name="Minimum registration group size", default=1)
     maximum_signup_group_size = models.IntegerField(verbose_name="Maximum registration group size", default=1)

@@ -1,30 +1,16 @@
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework.reverse import reverse
+from rest_framework import viewsets
+from datetime import datetime
 
 from .serializers import *
 
 
-# @api_view(("GET",))
-# @permission_classes((permissions.AllowAny,))
-# def api_root(request):
-#     return Response({
-#         "courses": reverse("course-list", request=request),
-#         "contacts": reverse("contact-list", request=request),
-#         "clubs": reverse("club-list", request=request),
-#         "memberships": reverse("membership-list", request=request),
-#         "teams": reverse("team-list", request=request),
-#     })
-
-
 class GolfCourseViewSet(viewsets.ModelViewSet):
-    serializer_class = GolfCourseDetailSerializer
+    serializer_class = GolfCourseSerializer
     queryset = GolfCourse.objects.all()
 
 
 class ContactViewSet(viewsets.ModelViewSet):
-    serializer_class = ContactDetailSerializer
+    serializer_class = ContactSerializer
 
     def get_queryset(self):
         queryset = Contact.objects.all()
@@ -38,7 +24,7 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 
 class ClubViewSet(viewsets.ModelViewSet):
-    serializer_class = ClubDetailSerializer
+    serializer_class = ClubSerializer
     queryset = Club.objects.all()
 
 
@@ -47,7 +33,7 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Membership.objects.all()
-        year = self.request.query_params.get("year", None)
+        year = self.request.query_params.get("year", datetime.today().year)
         if year is not None:
             queryset = queryset.filter(year=year)
         return queryset

@@ -1,39 +1,28 @@
-from rest_framework import viewsets
+from datetime import datetime
 
-from .models import *
+from rest_framework import viewsets
 from .serializers import *
 
 
 class EventViewSet(viewsets.ModelViewSet):
     """ API endpoint to view Events
     """
-    serializer_class = EventDetailSerializer
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return SimpleEventSerializer
+        else:
+            return EventDetailSerializer
 
     def get_queryset(self):
         """ Optionally filter by year
         """
         queryset = Event.objects.all()
-        year = self.request.query_params.get('year', None)
+        year = self.request.query_params.get('year', datetime.today().year)
 
         if year is not None:
             queryset = queryset.filter(start_date__year=year)
 
-        return queryset
-
-
-class EventChairViewSet(viewsets.ModelViewSet):
-    serializer_class = EventChairSerializer
-    queryset = EventChair.objects.all()
-
-
-class EventPointsViewSet(viewsets.ModelViewSet):
-    serializer_class = EventPointsSerializer
-    queryset = EventPoints.objects.all()
-
-
-class EventPolicyViewSet(viewsets.ModelViewSet):
-    serializer_class = EventPolicySerializer
-    queryset = EventPolicy.objects.all()
+        return queryset.order_by("start_date")
 
 
 class AwardViewSet(viewsets.ModelViewSet):
@@ -41,9 +30,9 @@ class AwardViewSet(viewsets.ModelViewSet):
     queryset = Award.objects.all()
 
 
-class AwardWinnerViewSet(viewsets.ModelViewSet):
-    serializer_class = AwardWinnerSerializer
-    queryset = AwardWinner.objects.all()
+# class AwardWinnerViewSet(viewsets.ModelViewSet):
+#     serializer_class = AwardWinnerSerializer
+#     queryset = AwardWinner.objects.all()
 
 
 class TournamentViewSet(viewsets.ModelViewSet):
@@ -51,6 +40,6 @@ class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
 
 
-class TournamentWinnerViewSet(viewsets.ModelViewSet):
-    serializer_class = TournamentWinnerSerializer
-    queryset = TournamentWinner.objects.all()
+# class TournamentWinnerViewSet(viewsets.ModelViewSet):
+#     serializer_class = TournamentWinnerSerializer
+#     queryset = TournamentWinner.objects.all()

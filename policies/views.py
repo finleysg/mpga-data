@@ -6,4 +6,14 @@ from .serializers import PolicySerializer
 
 class PolicyViewSet(viewsets.ModelViewSet):
     serializer_class = PolicySerializer
-    queryset = Policy.objects.all()
+
+    def get_queryset(self):
+        """ Optionally filter by code
+        """
+        queryset = Policy.objects.all()
+        policy_type = self.request.query_params.get('type', None)
+
+        if policy_type is not None:
+            queryset = queryset.filter(policy_type=policy_type)
+
+        return queryset

@@ -90,8 +90,6 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
     location = GolfCourseSerializer()
     tournament = TournamentSerializer()
-    documents = DocumentSerializer(many=True)
-    registrations = RegistrationSerializer(many=True)
     policies = EventPolicySerializer(many=True)
     chairs = EventChairSerializer(many=True)
     player_points = EventPointsSerializer(many=True)
@@ -101,9 +99,21 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "location", "name", "description", "rounds",
+        fields = ("id", "location", "name", "description", "rounds", "short_name",
                   "minimum_signup_group_size", "maximum_signup_group_size", "tournament",
                   "registration_type", "notes", "event_type",
                   "start_date", "registration_start", "registration_end", "early_registration_end",
-                  "registration_maximum", "documents", "registrations", "policies", "chairs", "player_points",
+                  "registration_maximum", "policies", "chairs", "player_points",
                   "divisions", "links", "fees", )
+
+
+class SimpleEventSerializer(serializers.ModelSerializer):
+
+    location = GolfCourseSerializer()
+    links = EventLinkSerializer(many=True)  # TODO: remove this?
+
+    class Meta:
+        model = Event
+        fields = ("id", "location", "name", "description", "rounds", "short_name",
+                  "registration_type", "event_type", "registration_maximum", "links",
+                  "start_date", "registration_start", "registration_end", "early_registration_end", )

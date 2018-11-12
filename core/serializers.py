@@ -18,7 +18,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ("id", "ghin", "home_club", "contact", )
+        fields = ("id", "home_club", "contact", )
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -48,7 +48,6 @@ class UserDetailSerializer(serializers.HyperlinkedModelSerializer):
         instance.email = validated_data.get("email", instance.email)
         instance.save()
 
-        member.ghin = member_data.get("ghin", member.ghin)
         member.home_club = member_data.get("home_club", member.home_club)
         member.contact = member_data.get("contact", member.contact)
         member.save()
@@ -66,7 +65,6 @@ class UserDetailSerializer(serializers.HyperlinkedModelSerializer):
             last_name=validated_data["last_name"],
         )
         Member.objects.create(
-            ghin=member_data.get("ghin", ""),
             home_club=member_data.get("home_club", ""),
             contact=member_data.get("contact", ""),
             user=user
@@ -81,4 +79,4 @@ class SimpleMemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ("id", "first_name", "last_name", "email", "ghin", )
+        fields = ("id", "first_name", "last_name", "email", )

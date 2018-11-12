@@ -9,7 +9,7 @@ class MemberInline(admin.StackedInline):
     model = Member
     can_delete = False
     verbose_name_plural = "member"
-    fields = ["ghin", "home_club", "contact", ]
+    fields = ["home_club", "contact", ]
 
 
 class MpgaUserAdmin(UserAdmin):
@@ -21,6 +21,7 @@ class SettingsAdmin(admin.ModelAdmin):
     fields = ["year", "reg_event", ]
     list_display = ["year", ]
     can_delete = False
+
 
 # Re-register UserAdmin
 admin.site.unregister(User)

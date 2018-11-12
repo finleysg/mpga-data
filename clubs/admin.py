@@ -1,12 +1,20 @@
 from django.contrib import admin
+import nested_admin
 
-from .models import Club, Contact, ClubContact, Membership, Team, GolfCourse
+from .models import *
 
 
-class ContactInline(admin.TabularInline):
+class ContactRoleInline(nested_admin.NestedTabularInline):
+    model = ClubContactRole
+    extra = 0
+    # sortable_field_name = "role"
+
+
+class ContactInline(nested_admin.NestedTabularInline):
     model = ClubContact
     can_delete = True
     extra = 0
+    inlines = [ContactRoleInline, ]
 
 
 class GolfCourseAdmin(admin.ModelAdmin):
@@ -25,7 +33,7 @@ class GolfCourseAdmin(admin.ModelAdmin):
     save_on_top = True
 
 
-class ClubAdmin(admin.ModelAdmin):
+class ClubAdmin(nested_admin.NestedModelAdmin):
     fieldsets = (
         (None, {
             "fields": (("name", "type_2", ), "golf_course", "website", "size", "notes", )

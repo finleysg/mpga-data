@@ -9,7 +9,7 @@ from events.models import Event
 
 DOCUMENT_TYPE_CHOICES = (
     ("T", "Tournament"),
-    ("B", "Banquet"),
+    ("R", "Registration"),
     ("M", "Meeting"),
     ("P", "Match Play"),
     ("F", "Financial"),

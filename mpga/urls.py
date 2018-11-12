@@ -32,13 +32,13 @@ router.register(r"settings", core_views.SettingsViewSet, "settings")
 router.register(r"documents", document_views.DocumentViewSet, "documents")
 router.register(r"photos", document_views.PhotoViewSet, "photos")
 router.register(r"events", event_views.EventViewSet, "events"),
-router.register(r"event-policies", event_views.EventPolicyViewSet, "event-policies")
-router.register(r"event-points", event_views.EventPointsViewSet, "event-points")
-router.register(r"event-chairs", event_views.EventChairViewSet, "event-chairs")
+# router.register(r"event-policies", event_views.EventPolicyViewSet, "event-policies")
+# router.register(r"event-points", event_views.EventPointsViewSet, "event-points")
+# router.register(r"event-chairs", event_views.EventChairViewSet, "event-chairs")
 router.register(r"awards", event_views.AwardViewSet, "awards"),
-router.register(r"award-winners", event_views.AwardWinnerViewSet, "award-winners"),
+# router.register(r"award-winners", event_views.AwardWinnerViewSet, "award-winners"),
 router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
-router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
+# router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
 router.register(r"pages", page_views.LandingPageViewSet, "pages")
 router.register(r"policies", policy_views.PolicyViewSet, "policies")
 router.register(r"registrations", registration_views.RegistrationViewSet, "registrations")
@@ -47,6 +47,7 @@ router.register(r"registration-groups", registration_views.RegistrationGroupView
 urlpatterns = [
     url(r"^api/", include(router.urls)),
     url(r"^admin/", admin.site.urls),
+    url(r'^nested_admin/', include('nested_admin.urls')),
     url(r"^rest-auth/", include("rest_auth.urls")),
     url(r"^rest-auth/registration/", include("rest_auth.registration.urls")),
     # this url is used to generate a password reset email

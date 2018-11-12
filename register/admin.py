@@ -21,7 +21,7 @@ class RegistrationGroupAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            "fields": (("event", "signed_up_by", ), )
+            "fields": (("event", "registered_by", ), )
         }),
         ("Payment Information", {
             "fields": ("payment_amount", "payment_confirmation_code", "payment_confirmation_timestamp", )
@@ -32,10 +32,10 @@ class RegistrationGroupAdmin(admin.ModelAdmin):
     )
     inlines = [RegistrationInline, ]
 
-    list_display = ["id", "signed_up_by", "players", "payment_confirmation_timestamp", "event", ]
+    list_display = ["id", "registered_by", "players", "payment_confirmation_timestamp", "event", ]
     list_display_links = ("id", )
-    list_select_related = ("signed_up_by", "event", )
-    ordering = ["signed_up_by"]
+    list_select_related = ("registered_by", "event", )
+    ordering = ["registered_by"]
     #
     # def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
     #     if db_field.name == "event":
@@ -44,7 +44,7 @@ class RegistrationGroupAdmin(admin.ModelAdmin):
 
     def get_changeform_initial_data(self, request):
         initial = super().get_changeform_initial_data(request)
-        initial["signed_up_by"] = request.user.member.id
+        initial["registered_by"] = request.user.member.id
         if "_changelist_filters" in request.GET:
             filters = request.GET["_changelist_filters"]
             initial["event"] = filters.split("=")[1]

@@ -23,6 +23,7 @@ INSTALLED_APPS = (
     "simple_history",
     "storages",
     "imagekit",
+    "nested_admin",
     "clubs",
     "communication",
     "core",

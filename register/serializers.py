@@ -41,5 +41,5 @@ class RegistrationGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RegistrationGroup
-        fields = ("id", "event", "signed_up_by", "notes", "payment_confirmation_code", "division",
+        fields = ("id", "event", "registered_by", "notes", "payment_confirmation_code", "division",
                   "payment_confirmation_timestamp", "payment_amount", "card_verification_token", "registrations", )

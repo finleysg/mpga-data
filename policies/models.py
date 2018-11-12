@@ -19,7 +19,7 @@ class Policy(models.Model):
     name = models.CharField(verbose_name="Name", max_length=30)
     title = models.CharField(verbose_name="Title", max_length=120)
     description = models.TextField(verbose_name="Description")
-    version = models.IntegerField(verbose_name="Version", default=1)
+    # version = models.IntegerField(verbose_name="Version", default=1)
 
     history = HistoricalRecords()
 

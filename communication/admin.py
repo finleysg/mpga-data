@@ -18,6 +18,7 @@ class AnnouncementAdmin(admin.ModelAdmin):
     list_filter = ("starts", )
     save_on_top = True
 
+
 admin.site.register(Announcement, AnnouncementAdmin)
 
 
@@ -33,5 +34,6 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ["full_name", "message_date", ]
     list_filter = ("message_date", )
     save_on_top = True
+
 
 admin.site.register(ContactMessage, ContactMessageAdmin)
