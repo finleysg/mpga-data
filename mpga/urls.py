@@ -46,8 +46,9 @@ router.register(r"registration-groups", registration_views.RegistrationGroupView
 
 urlpatterns = [
     url(r"^api/", include(router.urls)),
+    url(r"^grappelli/", include("grappelli.urls")),
     url(r"^admin/", admin.site.urls),
-    url(r'^nested_admin/', include('nested_admin.urls')),
+    url(r"^nested_admin/", include("nested_admin.urls")),
     url(r"^rest-auth/", include("rest_auth.urls")),
     url(r"^rest-auth/registration/", include("rest_auth.registration.urls")),
     # this url is used to generate a password reset email

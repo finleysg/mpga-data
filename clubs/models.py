@@ -60,6 +60,10 @@ class GolfCourse(models.Model):
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("name__icontains", )
+
 
 class Contact(models.Model):
     first_name = models.CharField(verbose_name="First Name", max_length=30)
@@ -80,6 +84,10 @@ class Contact(models.Model):
     def __str__(self):
         return self.name()
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("last_name__icontains", )
+
 
 class Club(models.Model):
 
@@ -96,6 +104,10 @@ class Club(models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("name__icontains", )
 
 
 class ClubContact(models.Model):

@@ -11,13 +11,13 @@ class DocumentViewSet(viewsets.ModelViewSet):
         """
         queryset = Document.objects.all()
         year = self.request.query_params.get('year', None)
-        event = self.request.query_params.get('event', None)
+        tournament = self.request.query_params.get('tournament', None)
         doc_type = self.request.query_params.get('type', None)
 
         if year is not None:
             queryset = queryset.filter(year=year)
-        if event is not None:
-            queryset = queryset.filter(event=event)
+        if tournament is not None:
+            queryset = queryset.filter(tournament=tournament)
         if doc_type is not None:
             queryset = queryset.filter(document_type=doc_type)
 
@@ -32,13 +32,13 @@ class PhotoViewSet(viewsets.ModelViewSet):
         """
         queryset = Photo.objects.all()
         year = self.request.query_params.get('year', None)
-        event = self.request.query_params.get('event', None)
+        tournament = self.request.query_params.get('tournament', None)
         pic_type = self.request.query_params.get('type', None)
 
         if year is not None:
             queryset = queryset.filter(year=year)
-        if event is not None:
-            queryset = queryset.filter(event=event)
+        if tournament is not None:
+            queryset = queryset.filter(event=tournament)
         if pic_type is not None:
             queryset = queryset.filter(photo_type=pic_type)
 

@@ -90,13 +90,13 @@ class AwardWinnerAdmin(admin.ModelAdmin):
 
 class TournamentWinnerAdmin(admin.ModelAdmin):
     fieldsets = (
-        ("Event", {
+        ("Championship", {
             "fields": ("year", "tournament", "location", )
         }),
         ("Winners", {
             "fields":  (("winner", "winner_club", ),
                         ("co_winner", "co_winner_club", ),
-                        ("flight_or_division", "score", "is_net", ), )
+                        ("flight_or_division", "score", "is_net", "is_match", ), )
         }),
         ("Notes", {
             "fields": ("notes", )

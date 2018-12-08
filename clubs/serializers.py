@@ -57,11 +57,11 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
 
-    # club = serializers.PrimaryKeyRelatedField(read_only=True)
-    club = ClubSerializer()
-    captain = ContactSerializer()
-    co_captain = ContactSerializer()
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
+    club_name = serializers.CharField(source="club.name")
+    contact = ContactSerializer()
+    contact2 = ContactSerializer()
 
     class Meta:
         model = Team
-        fields = ("id", "year", "club", "captain", "co_captain", "group_name", "is_senior", "notes", )
+        fields = ("id", "year", "club", "club_name", "contact", "contact2", "group_name", "is_senior", "notes", )

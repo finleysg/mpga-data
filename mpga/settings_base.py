@@ -5,9 +5,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = (
+    "django.contrib.contenttypes",
+    "grappelli.dashboard",
+    "grappelli",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -86,6 +88,10 @@ REST_AUTH_SERIALIZERS = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 WSGI_APPLICATION = "mpga.wsgi.application"
+
+GRAPPELLI_ADMIN_TITLE = "MPGA Administration"
+GRAPPELLI_ADMIN_URL = "/admin/"
+GRAPPELLI_INDEX_DASHBOARD = "dashboard.CustomIndexDashboard"
 
 # LOGIN_URL = "/login/"
 

@@ -81,11 +81,12 @@ class TournamentWinner(models.Model):
     location = models.CharField(verbose_name="Location", max_length=100)
     winner = models.CharField(verbose_name="Winner", max_length=100)
     winner_club = models.CharField(verbose_name="Club", max_length=100)
-    co_winner = models.CharField(verbose_name="Winner", max_length=100, blank=True)
+    co_winner = models.CharField(verbose_name="Winner (Opponent for Match Play)", max_length=100, blank=True)
     co_winner_club = models.CharField(verbose_name="Club", max_length=100, blank=True)
     flight_or_division = models.CharField(verbose_name="Flight or Division", max_length=20, choices=FLIGHT_CHOICES)
     score = models.CharField(verbose_name="Score", max_length=20, blank=True)
     is_net = models.BooleanField(verbose_name="Score is a Net Score", default=False)
+    is_match = models.BooleanField(verbose_name="Match Play", default=False)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
     class Meta:

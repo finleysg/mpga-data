@@ -17,7 +17,7 @@ class TournamentWinnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = TournamentWinner
         fields = ("id", "year", "tournament", "location", "winner", "winner_club", "co_winner", "co_winner_club",
-                  "flight_or_division", "score", "is_net", "notes", )
+                  "flight_or_division", "score", "is_net", "is_match", "notes", )
 
 
 class AwardSerializer(serializers.ModelSerializer):
