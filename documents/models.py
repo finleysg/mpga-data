@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import DO_NOTHING, CASCADE
-from imagekit import ImageSpec
+from imagekit import ImageSpec, register
 from imagekit.models import ImageSpecField
 from pilkit.processors import ResizeToFit
 from simple_history.models import HistoricalRecords
@@ -49,6 +49,10 @@ class WebSpec(ImageSpec):
     processors = [ResizeToFit(900, 900)]
 
 
+register.generator("documents:photo:thumbnail_image", ThumbnailSpec)
+register.generator("documents:photo:web_image", WebSpec)
+
+
 class Tag(models.Model):
     name = models.CharField(verbose_name="Tag", max_length=40)
 
@@ -82,8 +86,8 @@ class Photo(models.Model):
     caption = models.CharField(verbose_name="Caption", max_length=240, blank=True)
     tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, null=True, blank=True, on_delete=DO_NOTHING, related_name="photos")
     raw_image = models.ImageField(verbose_name="Image", upload_to=photo_directory_path)
-    thumbnail_image = ImageSpecField(source="raw_image", id="web:image:thumbnail_image")
-    web_image = ImageSpecField(source="raw_image", id="web:image:web_image")
+    thumbnail_image = ImageSpecField(source="raw_image", id="documents:photo:thumbnail_image")
+    web_image = ImageSpecField(source="raw_image", id="documents:photo:web_image")
     created_by = models.CharField(verbose_name="Created By", max_length=100)
     last_update = models.DateTimeField(auto_now=True)
 
