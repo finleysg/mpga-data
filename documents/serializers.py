@@ -33,10 +33,11 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 class PhotoSerializer(serializers.ModelSerializer):
 
-    tournament = serializers.PrimaryKeyRelatedField(queryset=Tournament.objects.all(), required=False)
+    thumbnail_url = serializers.ReadOnlyField(source="thumbnail_image.url")
+    image_url = serializers.ReadOnlyField(source="web_image.url")
     tags = PhotoTagSerializer(many=True)
 
     class Meta:
         model = Photo
-        fields = ("id", "year", "caption", "photo_type", "file", "tournament", "thumbnail_image", "web_image",
+        fields = ("id", "year", "caption", "photo_type", "tournament", "thumbnail_url", "image_url",
                   "created_by", "last_update", "tags", )

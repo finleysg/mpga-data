@@ -89,7 +89,6 @@ class EventLinkSerializer(serializers.ModelSerializer):
 class EventDetailSerializer(serializers.ModelSerializer):
 
     location = GolfCourseSerializer()
-    tournament = TournamentSerializer()
     policies = EventPolicySerializer(many=True)
     chairs = EventChairSerializer(many=True)
     player_points = EventPointsSerializer(many=True)
