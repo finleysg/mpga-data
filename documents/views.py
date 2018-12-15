@@ -38,7 +38,7 @@ class PhotoViewSet(viewsets.ModelViewSet):
         if year is not None:
             queryset = queryset.filter(year=year)
         if tournament is not None:
-            queryset = queryset.filter(event=tournament)
+            queryset = queryset.filter(tournament=tournament)
         if pic_type is not None:
             queryset = queryset.filter(photo_type=pic_type)
 

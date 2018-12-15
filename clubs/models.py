@@ -1,12 +1,20 @@
 from django.db import models
 
-
 STATE_CHOICES = (
-    ("IA", "Iowa"),
-    ("MN", "Minnesota"),
-    ("ND", "North Dakota"),
-    ("SD", "South Dakota"),
-    ("WI", "Wisconsin"),
+    ('AL', 'Alabama'), ('AK', 'Alaska'), ('AZ', 'Arizona'), ('AR', 'Arkansas'), ('CA', 'California'), ('CO', 'Colorado'),
+    ('CT', 'Connecticut'), ('DE', 'Delaware'), ('DC', 'District of Columbia'), ('FL', 'Florida'), ('GA', 'Georgia'),
+    ('HI', 'Hawaii'), ('ID', 'Idaho'), ('IL', 'Illinois'), ('IN', 'Indiana'), ('IA', 'Iowa'), ('KS', 'Kansas'),
+    ('KY', 'Kentucky'), ('LA', 'Louisiana'), ('ME', 'Maine'), ('MD', 'Maryland'), ('MA', 'Massachusetts'),
+    ('MI', 'Michigan'), ('MN', 'Minnesota'), ('MS', 'Mississippi'), ('MO', 'Missouri'), ('MT', 'Montana'),
+    ('NE', 'Nebraska'), ('NV', 'Nevada'), ('NH', 'New Hampshire'), ('NJ', 'New Jersey'), ('NM', 'New Mexico'),
+    ('NY', 'New York'), ('NC', 'North Carolina'), ('ND', 'North Dakota'), ('OH', 'Ohio'), ('OK', 'Oklahoma'),
+    ('OR', 'Oregon'), ('PA', 'Pennsylvania'), ('RI', 'Rhode Island'), ('SC', 'South Carolina'), ('SD', 'South Dakota'),
+    ('TN', 'Tennessee'), ('TX', 'Texas'), ('UT', 'Utah'), ('VT', 'Vermont'), ('VA', 'Virginia'), ('WA', 'Washington'),
+    ('WV', 'West Virginia'), ('WI', 'Wisconsin'), ('WY', 'Wyoming')
+)
+
+LOCAL_STATE_CHOICES = (
+    ('IA', 'Iowa'), ('MN', 'Minnesota'), ('ND', 'North Dakota'), ('WI', 'Wisconsin')
 )
 
 CONTACT_TYPE_CHOICES = (
@@ -50,7 +58,7 @@ class GolfCourse(models.Model):
     name = models.CharField(verbose_name="Golf Course Name", max_length=200)
     address_txt = models.CharField(verbose_name="Street Address", max_length=200, blank=True)
     city = models.CharField(verbose_name="City", max_length=40, blank=True)
-    state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True)
+    state = models.CharField(verbose_name="State", max_length=2, choices=LOCAL_STATE_CHOICES, default="MN", blank=True)
     zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
     website = models.CharField(verbose_name="Website", max_length=300, blank=True)
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
@@ -112,7 +120,7 @@ class Club(models.Model):
 
 class ClubContact(models.Model):
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_contacts")
-    contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING, related_name="contact_to_club")
+    contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.CASCADE, related_name="contact_to_club")
     role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
     use_for_mailings = models.BooleanField(verbose_name="Use for Club Mailings", default=False)
@@ -122,7 +130,7 @@ class ClubContact(models.Model):
 
 
 class ClubContactRole(models.Model):
-    club_contact = models.ForeignKey(verbose_name="Club Contact", to=ClubContact, on_delete=models.DO_NOTHING, related_name="roles")
+    club_contact = models.ForeignKey(verbose_name="Club Contact", to=ClubContact, on_delete=models.CASCADE, related_name="roles")
     role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
 
     def __str__(self):
@@ -145,8 +153,8 @@ class Membership(models.Model):
 class Team(models.Model):
     year = models.IntegerField(verbose_name="Golf Season")
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="teams")
-    contact = models.ForeignKey(verbose_name="Captain", to=Contact, on_delete=models.DO_NOTHING, null=True, related_name="captain")
-    contact2 = models.ForeignKey(verbose_name="Co-Captain", to=Contact, on_delete=models.DO_NOTHING, null=True, blank=True, related_name="co_captain")
+    contact = models.ForeignKey(verbose_name="Captain", to=Contact, on_delete=models.SET_NULL, null=True, related_name="captain")
+    contact2 = models.ForeignKey(verbose_name="Co-Captain", to=Contact, on_delete=models.SET_NULL, null=True, blank=True, related_name="co_captain")
     group_name = models.CharField(verbose_name="Group", max_length=20)
     is_senior = models.BooleanField(verbose_name="Senior")
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)

@@ -5,7 +5,7 @@ from imagekit.models import ImageSpecField
 from pilkit.processors import ResizeToFit
 from simple_history.models import HistoricalRecords
 
-from events.models import Event, Tournament
+from events.models import Tournament
 
 DOCUMENT_TYPE_CHOICES = (
     ("Admin", "Admin"),
@@ -39,7 +39,7 @@ def photo_directory_path(instance, filename):
 
 class ThumbnailSpec(ImageSpec):
     format = 'JPEG'
-    options = {'quality': 70}
+    options = {'quality': 80}
     processors = [ResizeToFit(192, 192)]
 
 

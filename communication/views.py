@@ -1,12 +1,8 @@
 from rest_framework import viewsets
-from django.core.mail import send_mail
 from django.utils import timezone
-from rest_framework import permissions
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
 
 from .models import Announcement, ContactMessage
-from .serializers import AnnouncementSerializer
+from .serializers import AnnouncementSerializer, ContactMessageSerializer
 
 
 class AnnouncementViewSet(viewsets.ModelViewSet):
@@ -20,21 +16,6 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-@api_view(['POST', ])
-@permission_classes((permissions.AllowAny,))
-def contact_message(request):
-    sender = request.data["full_name"]
-    sender_email = request.data["email"]
-    message_text = request.data["message_text"]
-    message = ContactMessage(full_name=sender, email=sender_email, message_text=message_text)
-    message.save()
-
-    # send_mail(
-    #     "MPGA: Contact Us Message from " + sender,
-    #     message_text,
-    #     sender_email,
-    #     ["contact@mpga.net"]
-    # )
-
-    return Response(status=201)
-
+class ContactMessageViewSet(viewsets.ModelViewSet):
+    serializer_class = ContactMessageSerializer
+    queryset = ContactMessage.objects.all()

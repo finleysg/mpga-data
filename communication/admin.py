@@ -24,15 +24,18 @@ admin.site.register(Announcement, AnnouncementAdmin)
 
 class ContactMessageAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {
-            "fields": ("full_name", "email", )
+        ("Contact", {
+            "fields": ("contact_name", "contact_email", "contact_phone", )
         }),
         ("Message", {
-            "fields": ("message_text", )
+            "fields": ("message_type", "message_date", "message", )
+        }),
+        ("Other", {
+            "fields": ("course", "season", )
         }),
     )
-    list_display = ["full_name", "message_date", ]
-    list_filter = ("message_date", )
+    list_display = ["contact_name", "message_type", "message_date", ]
+    list_filter = ("message_type", "message_date", )
     save_on_top = True
 
 

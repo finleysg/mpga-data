@@ -22,7 +22,16 @@ class Announcement(models.Model):
 
 
 class ContactMessage(models.Model):
-    full_name = models.CharField(verbose_name="Full name", max_length=100)
-    email = models.CharField(verbose_name="Email", max_length=254)
-    message_text = models.TextField(verbose_name="Message text")
+    message_type = models.CharField(verbose_name="Message type", max_length=30)
+    course = models.CharField(verbose_name="Golf course", blank=True, null=True, max_length=100)
+    contact_name = models.CharField(verbose_name="Contact name", max_length=100)
+    contact_email = models.CharField(verbose_name="Contact email", max_length=254)
+    contact_phone = models.CharField(verbose_name="Contact phone", max_length=20)
+    season = models.IntegerField(verbose_name="Golf season", blank=True, null=True)
+    message = models.TextField(verbose_name="Message")
     message_date = models.DateTimeField(verbose_name="Message date", auto_now_add=True)
+
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return "{}: {} {}".format(self.contact_name, self.message_type, self.message_date)

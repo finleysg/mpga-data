@@ -27,18 +27,14 @@ router.register(r"clubs", club_views.ClubViewSet, "clubs")
 router.register(r"memberships", club_views.MembershipViewSet, "memberships")
 router.register(r"teams", club_views.TeamViewSet, "teams")
 router.register(r"announcements", communication_views.AnnouncementViewSet, "announcements")
+router.register(r"messages", communication_views.ContactMessageViewSet, "messages")
 router.register(r"members", core_views.MemberViewSet, "members")
 router.register(r"settings", core_views.SettingsViewSet, "settings")
 router.register(r"documents", document_views.DocumentViewSet, "documents")
 router.register(r"photos", document_views.PhotoViewSet, "photos")
 router.register(r"events", event_views.EventViewSet, "events"),
-# router.register(r"event-policies", event_views.EventPolicyViewSet, "event-policies")
-# router.register(r"event-points", event_views.EventPointsViewSet, "event-points")
-# router.register(r"event-chairs", event_views.EventChairViewSet, "event-chairs")
 router.register(r"awards", event_views.AwardViewSet, "awards"),
-# router.register(r"award-winners", event_views.AwardWinnerViewSet, "award-winners"),
 router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
-# router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
 router.register(r"pages", page_views.LandingPageViewSet, "pages")
 router.register(r"policies", policy_views.PolicyViewSet, "policies")
 router.register(r"registrations", registration_views.RegistrationViewSet, "registrations")
