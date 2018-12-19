@@ -48,17 +48,17 @@ class FeeInline(admin.TabularInline):
 
 class EventAdmin(admin.ModelAdmin):
     fieldsets = (
-        ("Basic Settings and Fees", {
+        ("Basic Settings", {
             "fields": ("name", "short_name", "location", ("event_type", "tournament", "start_date", "rounds", ), )
         }),
         ("Format and Notes", {
             "classes": ("wide",),
             "fields": ("description", "notes", )
         }),
-        ("Registration", {
-            "fields":  (("registration_start", "early_registration_end", "registration_end", ),
-                        ("registration_maximum", "minimum_signup_group_size", "maximum_signup_group_size", ))
-        }),
+        # ("Registration", {
+        #     "fields":  (("registration_start", "early_registration_end", "registration_end", ),
+        #                 ("registration_maximum", "minimum_signup_group_size", "maximum_signup_group_size", ))
+        # }),
     )
 
     inlines = [FeeInline, PolicyInline, DivisionInline, PointsInline, ChairInline, LinksInLine, ]

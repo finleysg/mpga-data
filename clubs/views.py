@@ -1,6 +1,7 @@
-from rest_framework import viewsets
 from datetime import datetime
-
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 from .serializers import *
 
 
@@ -48,3 +49,10 @@ class TeamViewSet(viewsets.ModelViewSet):
         if year is not None:
             queryset = queryset.filter(year=year)
         return queryset
+
+
+@api_view(('GET',))
+@permission_classes((permissions.AllowAny,))
+def club_roles(request):
+    roles = ClubContactRole._meta.get_field('role').choices
+    return Response([r[0] for r in roles])

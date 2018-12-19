@@ -42,6 +42,7 @@ router.register(r"registration-groups", registration_views.RegistrationGroupView
 
 urlpatterns = [
     url(r"^api/", include(router.urls)),
+    url(r"^api/roles/", club_views.club_roles),
     url(r"^grappelli/", include("grappelli.urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^nested_admin/", include("nested_admin.urls")),
