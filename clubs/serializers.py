@@ -113,8 +113,8 @@ class ClubSerializer(serializers.ModelSerializer):
 
 class MembershipSerializer(serializers.ModelSerializer):
 
-    # club = serializers.PrimaryKeyRelatedField(read_only=True)
-    club = ClubSerializer()
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
+    # club = ClubSerializer()
 
     class Meta:
         model = Membership
