@@ -34,6 +34,58 @@ class ClubContactSerializer(serializers.ModelSerializer):
         model = ClubContact
         fields = ("id", "club", "contact", "is_primary", "use_for_mailings", "roles", )
 
+    def create(self, validated_data):
+        roles = validated_data.pop("roles")
+        contact = validated_data.pop("contact")
+        cc = ClubContact.objects.create(**validated_data)
+
+        if contact["id"] == 0:
+            contact["id"] = None  # mysql won't accept 0
+            cc.contact = Contact.create(club_contact=cc, **contact)
+        else:
+            cc.contact = contact
+
+        for r in roles:
+            r["id"] = None  # mysql won't accept 0
+            role = ClubContactRole.objects.create(club_contact=cc, **r)
+            cc.roles.add(role)
+
+        cc.save()
+
+        return cc
+
+    def update(self, instance, validated_data):
+        roles = validated_data.pop("roles")
+        contact_data = validated_data.pop("contact")
+
+        # Delete and recreate roles.
+        ClubContactRole.objects.filter(club_contact=instance).delete()
+        for r in roles:
+            r["id"] = None  # mysql won't accept 0
+            role = ClubContactRole.objects.create(club_contact=instance, **r)
+            instance.roles.add(role)
+
+        contact = instance.contact
+        contact.first_name = contact_data.get("first_name", contact.first_name)
+        contact.last_name = contact_data.get("last_name", contact.last_name)
+        contact.contact_type = contact_data.get("contact_type", contact.contact_type)
+        contact.primary_phone = contact_data.get("primary_phone", contact.primary_phone)
+        contact.alternate_phone = contact_data.get("alternate_phone", contact.alternate_phone)
+        contact.email = contact_data.get("email", contact.email)
+        contact.address_txt = contact_data.get("address_txt", contact.address_txt)
+        contact.city = contact_data.get("city", contact.city)
+        contact.state = contact_data.get("state", contact.state)
+        contact.zip = contact_data.get("zip", contact.zip)
+        contact.notes = contact_data.get("notes", contact.notes)
+        contact.save()
+
+        instance.is_primary = validated_data.get("is_primary", instance.is_primary)
+        instance.use_for_mailings = validated_data.get("use_for_mailings", instance.use_for_mailings)
+
+        instance.save()
+
+        return instance
+
 
 class ClubSerializer(serializers.ModelSerializer):
 
@@ -43,6 +95,20 @@ class ClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
         fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+
+    def update(self, instance, validated_data):
+
+        # only update fields on the model -- club contacts managed separately,
+        # golf course is read only and changeable only in the admin site
+        instance.name = validated_data.get("name", instance.name)
+        instance.website = validated_data.get("website", instance.website)
+        instance.type_2 = validated_data.get("type_2", instance.type_2)
+        instance.notes = validated_data.get("notes", instance.notes)
+        instance.size = validated_data.get("size", instance.size)
+
+        instance.save()
+
+        return instance
 
 
 class MembershipSerializer(serializers.ModelSerializer):

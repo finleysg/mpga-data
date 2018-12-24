@@ -1,7 +1,10 @@
 from datetime import datetime
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+
+from clubs.validation import check_club
 from .serializers import *
 
 
@@ -22,6 +25,11 @@ class ContactViewSet(viewsets.ModelViewSet):
         if contact_type is not None:
             queryset = queryset.filter(contact_type=contact_type)
         return queryset.order_by("last_name", "first_name", )
+
+
+class ClubContactViewSet(viewsets.ModelViewSet):
+    serializer_class = ClubContactSerializer
+    queryset = ClubContact.objects.all()
 
 
 class ClubViewSet(viewsets.ModelViewSet):
@@ -56,3 +64,10 @@ class TeamViewSet(viewsets.ModelViewSet):
 def club_roles(request):
     roles = ClubContactRole._meta.get_field('role').choices
     return Response([r[0] for r in roles])
+
+
+@api_view(("GET",))
+def club_validation_messages(request, club_id):
+    club = get_object_or_404(Club, pk=club_id)
+    messages = check_club(club)
+    return Response(messages)

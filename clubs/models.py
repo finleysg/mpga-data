@@ -89,6 +89,9 @@ class Contact(models.Model):
     def name(self):
         return "{}, {}".format(self.last_name, self.first_name)
 
+    def has_address(self):
+        return self.address_txt and self.city and self.state and self.zip
+
     def __str__(self):
         return self.name()
 

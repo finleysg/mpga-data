@@ -7,6 +7,7 @@ PAGE_TYPE_CHOICES = (
     ("A", "About the MPGA"),
     ("M", "Match Play"),
     ("C", "Member Clubs"),
+    ("E", "Club Editing"),
 )
 
 

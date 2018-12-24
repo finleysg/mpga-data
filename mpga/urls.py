@@ -23,6 +23,7 @@ admin.site.site_header = "MPGA Administration"
 router = DefaultRouter()
 router.register(r"courses", club_views.GolfCourseViewSet, "courses")
 router.register(r"contacts", club_views.ContactViewSet, "contacts")
+router.register(r"club-contacts", club_views.ClubContactViewSet, "club-contacts")
 router.register(r"clubs", club_views.ClubViewSet, "clubs")
 router.register(r"memberships", club_views.MembershipViewSet, "memberships")
 router.register(r"teams", club_views.TeamViewSet, "teams")
@@ -43,6 +44,7 @@ router.register(r"registration-groups", registration_views.RegistrationGroupView
 urlpatterns = [
     url(r"^api/", include(router.urls)),
     url(r"^api/roles/", club_views.club_roles),
+    url(r"^api/club-validation/(?P<club_id>[0-9]+)/$", club_views.club_validation_messages),
     url(r"^grappelli/", include("grappelli.urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^nested_admin/", include("nested_admin.urls")),
