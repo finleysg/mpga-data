@@ -42,9 +42,12 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Membership.objects.all()
-        year = self.request.query_params.get("year", datetime.today().year)
+        year = self.request.query_params.get("year", None)
         if year is not None:
             queryset = queryset.filter(year=year)
+        club = self.request.query_params.get("club", None)
+        if club is not None:
+            queryset = queryset.filter(club=club)
         return queryset
 
 
