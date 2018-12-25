@@ -32,7 +32,7 @@ class ClubContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClubContact
-        fields = ("id", "club", "contact", "is_primary", "use_for_mailings", "roles", )
+        fields = ("id", "club", "contact", "is_primary", "use_for_mailings", "roles", "notes", )
 
     def create(self, validated_data):
         roles = validated_data.pop("roles")
@@ -81,6 +81,7 @@ class ClubContactSerializer(serializers.ModelSerializer):
 
         instance.is_primary = validated_data.get("is_primary", instance.is_primary)
         instance.use_for_mailings = validated_data.get("use_for_mailings", instance.use_for_mailings)
+        instance.notes = validated_data.get("notes", instance.notes)
 
         instance.save()
 
@@ -114,7 +115,6 @@ class ClubSerializer(serializers.ModelSerializer):
 class MembershipSerializer(serializers.ModelSerializer):
 
     club = serializers.PrimaryKeyRelatedField(read_only=True)
-    # club = ClubSerializer()
 
     class Meta:
         model = Membership
@@ -125,9 +125,9 @@ class TeamSerializer(serializers.ModelSerializer):
 
     club = serializers.PrimaryKeyRelatedField(read_only=True)
     club_name = serializers.CharField(source="club.name")
-    contact = ContactSerializer()
-    contact2 = ContactSerializer()
+    # contact = ContactSerializer()
+    # contact2 = ContactSerializer()
 
     class Meta:
         model = Team
-        fields = ("id", "year", "club", "club_name", "contact", "contact2", "group_name", "is_senior", "notes", )
+        fields = ("id", "year", "club", "club_name", "group_name", "is_senior", "notes", )

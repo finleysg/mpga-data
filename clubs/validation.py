@@ -11,7 +11,7 @@ def check_club(club):
     if not club.notes:
         messages.append(("info", "Use the club notes to share information about your club."))
     if not club.club_contacts:
-        messages.append(("error", "You must give us at least one club contact."))
+        messages.append(("error", "Please give us at least one club contact."))
     if not has_handicap_chair(club):
         messages.append(("error", "Every club must have a Handicap Chair."))
 

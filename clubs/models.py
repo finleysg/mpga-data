@@ -20,8 +20,8 @@ LOCAL_STATE_CHOICES = (
 CONTACT_TYPE_CHOICES = (
     ("Men's Club", "Men's Club"),
     ("Facilities", "Facilities"),
-    ("Allied Association", "Allied Association"),
-    ("Executive Committee", "Executive Committee"),
+    # ("Allied Association", "Allied Association"),
+    # ("Executive Committee", "Executive Committee"),
 )
 
 CONTACT_ROLE_CHOICES = (
@@ -124,9 +124,10 @@ class Club(models.Model):
 class ClubContact(models.Model):
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_contacts")
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.CASCADE, related_name="contact_to_club")
-    role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
+    # role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
     use_for_mailings = models.BooleanField(verbose_name="Use for Club Mailings", default=False)
+    notes = models.CharField(verbose_name="Notes", max_length=150, blank=True, null=True)
 
     def __str__(self):
         return "{}: {} {}".format(self.club.name, self.contact.first_name, self.contact.last_name)
@@ -156,8 +157,8 @@ class Membership(models.Model):
 class Team(models.Model):
     year = models.IntegerField(verbose_name="Golf Season")
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="teams")
-    contact = models.ForeignKey(verbose_name="Captain", to=Contact, on_delete=models.SET_NULL, null=True, related_name="captain")
-    contact2 = models.ForeignKey(verbose_name="Co-Captain", to=Contact, on_delete=models.SET_NULL, null=True, blank=True, related_name="co_captain")
+    # contact = models.ForeignKey(verbose_name="Captain", to=Contact, on_delete=models.SET_NULL, null=True, related_name="captain")
+    # contact2 = models.ForeignKey(verbose_name="Co-Captain", to=Contact, on_delete=models.SET_NULL, null=True, blank=True, related_name="co_captain")
     group_name = models.CharField(verbose_name="Group", max_length=20)
     is_senior = models.BooleanField(verbose_name="Senior")
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)

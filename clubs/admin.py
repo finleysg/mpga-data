@@ -96,16 +96,16 @@ class MembershipAdmin(DefaultFilterMixIn):
 
 
 class TeamAdmin(DefaultFilterMixIn):
-    fields = ["year", "club", "contact", "contact2", "group_name", "is_senior", ]
-    list_display = ["club", "group_name", "is_senior", "contact", "year", ]
+    fields = ["year", "club", "group_name", "is_senior", ]
+    list_display = ["club", "group_name", "is_senior", "year", ]
     list_display_links = ["club", ]
     list_filter = ["year", "group_name", "is_senior", ]
     ordering = ["club", "year", ]
     default_filters = (f"year={current_season}", )
     change_list_filter_template = "admin/filter_listing.html"
-    raw_id_fields = ("contact", "club", )
+    raw_id_fields = ("club", )
     autocomplete_lookup_fields = {
-        "fk": ["contact", "club", ]
+        "fk": ["club", ]
     }
 
 

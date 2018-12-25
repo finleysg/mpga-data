@@ -1,7 +1,6 @@
-from datetime import datetime
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from clubs.validation import check_club
@@ -63,7 +62,6 @@ class TeamViewSet(viewsets.ModelViewSet):
 
 
 @api_view(('GET',))
-@permission_classes((permissions.AllowAny,))
 def club_roles(request):
     roles = ClubContactRole._meta.get_field('role').choices
     return Response([r[0] for r in roles])
