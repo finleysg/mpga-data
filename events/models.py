@@ -17,18 +17,6 @@ REGISTRATION_TYPE_CHOICES = (
     ("3", "No Registration Required"),
 )
 
-FLIGHT_CHOICES = (
-    ("Championship", "Championship"),
-    ("Senior", "Senior"),
-    ("Super Senior", "Super Senior"),
-    ("First Flight", "First Flight"),
-    ("Second Flight", "Second Flight"),
-    ("Third Flight", "Third Flight"),
-    ("Fourth Flight", "Fourth Flight"),
-    ("Fifth Flight", "Fifth Flight"),
-    ("Sixth Flight", "Sixth Flight"),
-)
-
 LINK_TYPE_CHOICES = (
     ("Results", "Results"),
     ("Tee Times", "Tee Times"),
@@ -68,8 +56,8 @@ class Tournament(models.Model):
     description = models.TextField(verbose_name="Description")
 
     class Meta:
-        verbose_name = 'Championship Overview'
-        verbose_name_plural = 'Championship Overviews'
+        verbose_name = 'Competition'
+        verbose_name_plural = 'Competitions'
 
     def __str__(self):
         return self.name
@@ -83,15 +71,15 @@ class TournamentWinner(models.Model):
     winner_club = models.CharField(verbose_name="Club", max_length=100)
     co_winner = models.CharField(verbose_name="Winner (Opponent for Match Play)", max_length=100, blank=True)
     co_winner_club = models.CharField(verbose_name="Club", max_length=100, blank=True)
-    flight_or_division = models.CharField(verbose_name="Flight or Division", max_length=20, choices=FLIGHT_CHOICES)
+    flight_or_division = models.CharField(verbose_name="Flight or Division", max_length=20)
     score = models.CharField(verbose_name="Score", max_length=20, blank=True)
     is_net = models.BooleanField(verbose_name="Score is a Net Score", default=False)
     is_match = models.BooleanField(verbose_name="Match Play", default=False)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Championship Winner'
-        verbose_name_plural = 'Championship Winners'
+        verbose_name = 'Competition Winner'
+        verbose_name_plural = 'Competition Winners'
 
     def __str__(self):
         return "{} {}".format(self.year, self.tournament)
@@ -118,8 +106,8 @@ class Event(models.Model):
     history = HistoricalRecords()
 
     class Meta:
-        verbose_name = 'Championship or Other Event'
-        verbose_name_plural = 'Championships and Other Events'
+        verbose_name = 'Championship or Competition'
+        verbose_name_plural = 'Championships and Competitions'
 
     def __str__(self):
         return self.name
