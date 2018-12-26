@@ -37,8 +37,17 @@ class AwardViewSet(viewsets.ModelViewSet):
 
 class TournamentViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentSerializer
-    queryset = Tournament.objects.all()
 
+    def get_queryset(self):
+        """ Optionally filter by year
+        """
+        queryset = Tournament.objects.all()
+        name = self.request.query_params.get('name', None)
+
+        if name is not None:
+            queryset = queryset.filter(name=name)
+
+        return queryset
 
 # class TournamentWinnerViewSet(viewsets.ModelViewSet):
 #     serializer_class = TournamentWinnerSerializer
