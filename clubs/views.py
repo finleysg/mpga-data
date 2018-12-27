@@ -13,7 +13,7 @@ class GolfCourseViewSet(viewsets.ModelViewSet):
 
 
 class ContactViewSet(viewsets.ModelViewSet):
-    serializer_class = ContactSerializer
+    serializer_class = PublicContactSerializer
 
     def get_queryset(self):
         queryset = Contact.objects.all()
@@ -27,12 +27,12 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 
 class ClubContactViewSet(viewsets.ModelViewSet):
-    serializer_class = ClubContactSerializer
+    serializer_class = PublicClubContactSerializer
     queryset = ClubContact.objects.all()
 
 
 class ClubViewSet(viewsets.ModelViewSet):
-    serializer_class = ClubSerializer
+    serializer_class = PublicClubSerializer
     queryset = Club.objects.all()
 
 

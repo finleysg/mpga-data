@@ -17,6 +17,14 @@ class ContactSerializer(serializers.ModelSerializer):
                   "address_txt", "city", "state", "zip", "notes", )
 
 
+class PublicContactSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Contact
+        fields = ("id", "first_name", "last_name", "contact_type", "public_phone", "public_email",
+                  "public_address", "notes", )
+
+
 class ClubContactRoleSerializer(serializers.ModelSerializer):
     club_contact = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -88,6 +96,16 @@ class ClubContactSerializer(serializers.ModelSerializer):
         return instance
 
 
+class PublicClubContactSerializer(serializers.ModelSerializer):
+    club = serializers.PrimaryKeyRelatedField(read_only=True)
+    contact = PublicContactSerializer()
+    roles = ClubContactRoleSerializer(many=True)
+
+    class Meta:
+        model = ClubContact
+        fields = ("id", "club", "contact", "is_primary", "use_for_mailings", "roles", "notes", )
+
+
 class ClubSerializer(serializers.ModelSerializer):
 
     golf_course = GolfCourseSerializer()
@@ -112,6 +130,16 @@ class ClubSerializer(serializers.ModelSerializer):
         return instance
 
 
+class PublicClubSerializer(serializers.ModelSerializer):
+
+    golf_course = GolfCourseSerializer()
+    club_contacts = PublicClubContactSerializer(many=True)
+
+    class Meta:
+        model = Club
+        fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+
+
 class MembershipSerializer(serializers.ModelSerializer):
 
     club = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -123,7 +151,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
 
-    club = ClubSerializer(read_only=True)
+    club = PublicClubSerializer(read_only=True)
 
     class Meta:
         model = Team

@@ -20,8 +20,6 @@ LOCAL_STATE_CHOICES = (
 CONTACT_TYPE_CHOICES = (
     ("Men's Club", "Men's Club"),
     ("Facilities", "Facilities"),
-    # ("Allied Association", "Allied Association"),
-    # ("Executive Committee", "Executive Committee"),
 )
 
 CONTACT_ROLE_CHOICES = (
@@ -86,14 +84,37 @@ class Contact(models.Model):
     zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
+    @property
+    def public_email(self):
+        if self.email:
+            return str(self.email).split("@")[1]
+        else:
+            return ""
+
+    @property
+    def public_phone(self):
+        if self.primary_phone:
+            return str(self.primary_phone).split("-")[0]
+        else:
+            return ""
+
+    @property
+    def public_address(self):
+        if self.has_address:
+            return self.city
+        else:
+            return ""
+
+    @property
     def name(self):
         return "{}, {}".format(self.last_name, self.first_name)
 
+    @property
     def has_address(self):
         return self.address_txt and self.city and self.state and self.zip
 
     def __str__(self):
-        return self.name()
+        return self.name
 
     @staticmethod
     def autocomplete_search_fields():
@@ -157,8 +178,6 @@ class Membership(models.Model):
 class Team(models.Model):
     year = models.IntegerField(verbose_name="Golf Season")
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="teams")
-    # contact = models.ForeignKey(verbose_name="Captain", to=Contact, on_delete=models.SET_NULL, null=True, related_name="captain")
-    # contact2 = models.ForeignKey(verbose_name="Co-Captain", to=Contact, on_delete=models.SET_NULL, null=True, blank=True, related_name="co_captain")
     group_name = models.CharField(verbose_name="Group", max_length=20)
     is_senior = models.BooleanField(verbose_name="Senior")
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
