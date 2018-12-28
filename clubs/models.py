@@ -79,7 +79,7 @@ class GolfCourse(models.Model):
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
     phone = models.CharField(verbose_name="Phone", max_length=20, blank=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
-    logo = models.ImageField(verbose_name="Logo", upload_to=photo_directory_path)
+    logo = models.ImageField(verbose_name="Logo", blank=True, null=True, upload_to=photo_directory_path)
     web_logo = ImageSpecField(source="logo", id="clubs:golf_course:web_logo")
 
     def __str__(self):
