@@ -61,6 +61,16 @@ class TeamViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+class CommitteeViewSet(viewsets.ModelViewSet):
+    serializer_class = CommitteeSerializer
+    queryset = Committee.objects.all()
+
+
+class AffiliateViewSet(viewsets.ModelViewSet):
+    serializer_class = AffiliateSerializer
+    queryset = Affiliate.objects.all()
+
+
 @api_view(('GET',))
 def club_roles(request):
     roles = ClubContactRole._meta.get_field('role').choices

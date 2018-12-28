@@ -28,10 +28,11 @@ class ContactMessageAdmin(admin.ModelAdmin):
             "fields": ("contact_name", "contact_email", "contact_phone", )
         }),
         ("Message", {
-            "fields": ("message_type", "message_date", "message", )
+            "fields": ("message_type", "message", ),
+            # "readonly_fields": ("message_date", )
         }),
         ("Other", {
-            "fields": ("course", "season", )
+            "fields": ("course", "event", )
         }),
     )
     list_display = ["contact_name", "message_type", "message_date", ]

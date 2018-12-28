@@ -156,3 +156,19 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ("id", "year", "club", "group_name", "is_senior", "notes", )
+
+
+class CommitteeSerializer(serializers.ModelSerializer):
+
+    home_club = serializers.CharField(source="home_club.name")
+    contact = PublicContactSerializer()
+
+    class Meta:
+        model = Committee
+        fields = ("id", "role", "home_club", "contact", )
+
+
+class AffiliateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Affiliate
+        fields = ("id", "organization", "website", "notes", )

@@ -20,7 +20,7 @@ class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
         fields = ("id", "message_type", "course", "contact_name", "contact_email", "contact_phone",
-                  "season", "message", "message_date", )
+                  "event", "message", "message_date", )
 
     def create(self, validated_data):
         message = ContactMessage.objects.create(**validated_data)

@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 from django.utils import timezone
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import AllowAny
 
 from .models import Announcement, ContactMessage
 from .serializers import AnnouncementSerializer, ContactMessageSerializer
@@ -16,6 +18,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class ContactMessageViewSet(viewsets.ModelViewSet):
+class ContactMessageView(CreateAPIView):
     serializer_class = ContactMessageSerializer
     queryset = ContactMessage.objects.all()
+    permission_classes = (AllowAny,)

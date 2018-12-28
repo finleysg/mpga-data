@@ -109,8 +109,24 @@ class TeamAdmin(DefaultFilterMixIn):
     }
 
 
+class CommitteeAdmin(admin.ModelAdmin):
+    fields = ["contact", "role", "home_club", ]
+    list_display = ["contact", "role", "home_club", ]
+    list_display_links = ["contact", ]
+    ordering = ["contact", ]
+
+
+class AffiliateAdmin(admin.ModelAdmin):
+    fields = ["organization", "website", "notes", ]
+    list_display = ["organization", "website", ]
+    list_display_links = ["organization", ]
+    ordering = ["organization", ]
+
+
 admin.site.register(GolfCourse, GolfCourseAdmin)
 admin.site.register(Club, ClubAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(Membership, MembershipAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Committee, CommitteeAdmin)
+admin.site.register(Affiliate, AffiliateAdmin)
