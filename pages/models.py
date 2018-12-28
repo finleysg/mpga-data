@@ -9,6 +9,7 @@ PAGE_TYPE_CHOICES = (
     ("C", "Member Clubs"),
     ("E", "Club Editing"),
     ("CC", "Code of Conduct"),
+    ("OM", "Our Mission")
 )
 
 

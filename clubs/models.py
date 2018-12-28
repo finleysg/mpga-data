@@ -1,4 +1,7 @@
 from django.db import models
+from imagekit import ImageSpec, register
+from imagekit.models import ImageSpecField
+from pilkit.processors import ResizeToFit
 
 STATE_CHOICES = (
     ('AL', 'Alabama'), ('AK', 'Alaska'), ('AZ', 'Arizona'), ('AR', 'Arkansas'), ('CA', 'California'), ('CO', 'Colorado'),
@@ -48,6 +51,20 @@ PAYMENT_TYPE_CHOICES = (
 )
 
 
+def photo_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/documents/year/<filename>
+    return "photos/{0}/{1}".format(instance.year, filename)
+
+
+class WebSpec(ImageSpec):
+    format = 'JPEG'
+    options = {'quality': 80}
+    processors = [ResizeToFit(192, 192)]
+
+
+register.generator("clubs:golf_course:web_logo", WebSpec)
+
+
 class GolfCourse(models.Model):
 
     class Meta:
@@ -62,6 +79,8 @@ class GolfCourse(models.Model):
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
     phone = models.CharField(verbose_name="Phone", max_length=20, blank=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
+    logo = models.ImageField(verbose_name="Logo", upload_to=photo_directory_path)
+    web_logo = ImageSpecField(source="logo", id="clubs:golf_course:web_logo")
 
     def __str__(self):
         return self.name

@@ -29,7 +29,7 @@ class ContactInline(nested_admin.NestedTabularInline):
 class GolfCourseAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
-            "fields": ("name", "email", "phone", "website", "notes", )
+            "fields": ("name", "email", "phone", "website", "logo", "notes", )
         }),
         ("Mailing Address", {
             "fields": ("address_txt", "city", "state", "zip",)

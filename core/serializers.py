@@ -9,7 +9,7 @@ class SettingsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SeasonSettings
-        fields = ("year", "reg_event", )
+        fields = ("event_calendar_year", "match_play_year", "member_club_year", )
 
 
 class MemberSerializer(serializers.ModelSerializer):

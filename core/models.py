@@ -9,8 +9,9 @@ from events.models import Event
 
 
 class SeasonSettings(models.Model):
-    year = models.IntegerField(verbose_name="Current golf season")
-    reg_event = models.ForeignKey(verbose_name="Registration event", to=Event, on_delete=DO_NOTHING, related_name="registration")
+    event_calendar_year = models.IntegerField(verbose_name="Default year for the event calendar")
+    match_play_year = models.IntegerField(verbose_name="Default year for match play")
+    member_club_year = models.IntegerField(verbose_name="Default year for club membership")
 
 
 class Member(models.Model):

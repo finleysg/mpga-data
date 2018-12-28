@@ -4,9 +4,12 @@ from rest_framework import serializers
 
 class GolfCourseSerializer(serializers.ModelSerializer):
 
+    logo_url = serializers.ReadOnlyField(source="web_logo.url")
+
     class Meta:
         model = GolfCourse
-        fields = ("id", "name", "address_txt", "city", "state", "zip", "website", "email", "phone", "notes", )
+        fields = ("id", "name", "address_txt", "city", "state", "zip", "website", "email", "phone",
+                  "logo_url", "notes", )
 
 
 class ContactSerializer(serializers.ModelSerializer):

@@ -18,8 +18,8 @@ class MpgaUserAdmin(UserAdmin):
 
 
 class SettingsAdmin(admin.ModelAdmin):
-    fields = ["year", "reg_event", ]
-    list_display = ["year", ]
+    fields = ["event_calendar_year", "match_play_year", "member_club_year", ]
+    list_display = ["event_calendar_year", "match_play_year", "member_club_year", ]
     can_delete = False
 
 
