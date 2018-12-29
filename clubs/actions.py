@@ -1,7 +1,6 @@
 import csv
 
 from django.http import HttpResponse
-
 from clubs.models import ClubContact
 
 

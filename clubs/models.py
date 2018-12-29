@@ -53,7 +53,7 @@ PAYMENT_TYPE_CHOICES = (
 
 def photo_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/documents/year/<filename>
-    return "photos/{0}/{1}".format(instance.year, filename)
+    return "photos/course-logos/{0}".format(filename)
 
 
 class WebSpec(ImageSpec):

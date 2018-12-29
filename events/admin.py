@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from .models import *
 
 
@@ -67,6 +66,7 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = ("start_date", "event_type", )
     ordering = ["start_date", ]
     save_on_top = True
+    save_as = True
 
 
 class AwardAdmin(admin.ModelAdmin):
