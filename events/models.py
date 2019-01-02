@@ -106,8 +106,9 @@ class Event(models.Model):
     history = HistoricalRecords()
 
     class Meta:
-        verbose_name = 'Championship or Competition'
-        verbose_name_plural = 'Championships and Competitions'
+        verbose_name = 'Event'
+        verbose_name_plural = 'Events'
+        ordering = ["start_date", ]
 
     def __str__(self):
         return self.name

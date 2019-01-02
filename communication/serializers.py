@@ -24,5 +24,5 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         message = ContactMessage.objects.create(**validated_data)
-        # TODO: forward_contact_message(message)
+        forward_contact_message(message)
         return message

@@ -1,9 +1,13 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from datetime import date
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from clubs.validation import check_club
+from core.models import SeasonSettings
+from core.payments import stripe_charge
 from .serializers import *
 
 
@@ -13,7 +17,12 @@ class GolfCourseViewSet(viewsets.ModelViewSet):
 
 
 class ContactViewSet(viewsets.ModelViewSet):
-    serializer_class = PublicContactSerializer
+    def get_serializer_class(self):
+        is_edit = self.request.query_params.get("edit", False)
+        if is_edit:
+            return ContactSerializer
+        else:
+            return PublicContactSerializer
 
     def get_queryset(self):
         queryset = Contact.objects.all()
@@ -27,12 +36,26 @@ class ContactViewSet(viewsets.ModelViewSet):
 
 
 class ClubContactViewSet(viewsets.ModelViewSet):
-    serializer_class = PublicClubContactSerializer
+    def get_serializer_class(self):
+        is_edit = self.request.query_params.get("edit", False)
+        if is_edit:
+            return ClubContactSerializer
+        else:
+            return PublicClubContactSerializer
+
     queryset = ClubContact.objects.all()
 
 
 class ClubViewSet(viewsets.ModelViewSet):
-    serializer_class = PublicClubSerializer
+    def get_serializer_class(self):
+        is_edit = self.request.query_params.get("edit", False)
+        if is_edit:
+            return ClubSerializer
+        elif self.action == 'list':
+            return SimpleClubSerializer
+        else:
+            return PublicClubSerializer
+
     queryset = Club.objects.all()
 
 
@@ -82,3 +105,25 @@ def club_validation_messages(request, club_id):
     club = get_object_or_404(Club, pk=club_id)
     messages = check_club(club)
     return Response(messages)
+
+
+@api_view(("POST",))
+@permission_classes((permissions.IsAuthenticated,))
+@transaction.atomic()
+def pay_club_membership(request, club_id):
+    club = get_object_or_404(Club, pk=club_id)
+    year = request.data.get("year", None)
+    token = request.data.get("token", None)
+
+    # TODO: can this be truly transactional?
+    # process payment via Stripe
+    config = SeasonSettings.objects.current_settings()
+    description = "{} membership dues for {}".format(year, club.name)
+    charge = stripe_charge(request.user, token, description, int(100 * config.membership_dues))
+
+    # create our membership object
+    mem = Membership(year=year, club=club, payment_date=date.today(), payment_type="OL", payment_code=charge.id)
+    mem.save()
+
+    serializer = MembershipSerializer(mem, context={"request": request})
+    return Response(serializer.data)

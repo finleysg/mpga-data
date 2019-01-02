@@ -1,0 +1,26 @@
+{% extends "templated_email/email_base.html" %}
+{% block subject %}MGPA Contact Message{% endblock %}
+{% block content %}
+<p style="margin: 0;font-size: 14px;margin-bottom: 10px;">You are receiving this email because we have received a contact message from the MPGA website:</p>
+<h3>Contact Information</h3>
+<table style="border-spacing: 0;font-family: sans-serif;color: #333333;">
+    <tr>
+        <td class="inner" style="padding: 2px;">Name:</td>
+        <td class="inner" style="padding: 2px;">{{message.contact_name}}</td>
+    </tr>
+    <tr>
+        <td class="inner" style="padding: 2px;">Email:</td>
+        <td class="inner" style="padding: 2px;">{{message.contact_email}}</td>
+    </tr>
+    <tr>
+        <td class="inner" style="padding: 2px;">Phone:</td>
+        <td class="inner" style="padding: 2px;">{{message.contact_phone}}</td>
+    </tr>
+    <tr>
+        <td class="inner" style="padding: 2px;">Home Club:</td>
+        <td class="inner" style="padding: 2px;">{{message.course}}</td>
+    </tr>
+</table>
+<h3>Message</h3>
+{{message.message}}
+{% endblock %}

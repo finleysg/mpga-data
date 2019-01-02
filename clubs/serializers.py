@@ -12,6 +12,13 @@ class GolfCourseSerializer(serializers.ModelSerializer):
                   "logo_url", "notes", )
 
 
+class SimpleGolfCourseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GolfCourse
+        fields = ("id", "name", "city", )
+
+
 class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -111,7 +118,7 @@ class PublicClubContactSerializer(serializers.ModelSerializer):
 
 class ClubSerializer(serializers.ModelSerializer):
 
-    golf_course = GolfCourseSerializer()
+    golf_course = GolfCourseSerializer(read_only=True)
     club_contacts = ClubContactSerializer(many=True)
 
     class Meta:
@@ -141,6 +148,15 @@ class PublicClubSerializer(serializers.ModelSerializer):
     class Meta:
         model = Club
         fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+
+
+class SimpleClubSerializer(serializers.ModelSerializer):
+
+    golf_course = SimpleGolfCourseSerializer()
+
+    class Meta:
+        model = Club
+        fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", )
 
 
 class MembershipSerializer(serializers.ModelSerializer):

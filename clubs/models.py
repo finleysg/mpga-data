@@ -1,3 +1,7 @@
+import random
+import string
+
+from django.contrib.auth.models import User
 from django.db import models
 from imagekit import ImageSpec, register
 from imagekit.models import ImageSpecField
@@ -34,7 +38,6 @@ CONTACT_ROLE_CHOICES = (
     ("Match Play Captain", "Match Play Captain"),
     ("Men's Club Contact", "Men's Club Contact"),
     ("Men's Club President", "Men's Club President"),
-    ("Men's Club President", "Men's Club Past-President"),
     ("Men's Club Secretary", "Men's Club Secretary"),
     ("Men's Club Treasurer", "Men's Club Treasurer"),
     ("Owner", "Owner"),
@@ -79,7 +82,7 @@ class GolfCourse(models.Model):
     email = models.CharField(verbose_name="Email", max_length=250, blank=True)
     phone = models.CharField(verbose_name="Phone", max_length=20, blank=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
-    logo = models.ImageField(verbose_name="Logo", blank=True, null=True, upload_to=photo_directory_path)
+    logo = models.ImageField(verbose_name="Logo", upload_to=photo_directory_path)
     web_logo = ImageSpecField(source="logo", id="clubs:golf_course:web_logo")
 
     def __str__(self):
@@ -164,9 +167,36 @@ class Club(models.Model):
 class ClubContact(models.Model):
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_contacts")
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.CASCADE, related_name="contact_to_club")
+    user = models.ForeignKey(verbose_name="User", to=User, on_delete=models.CASCADE, blank=True, null=True)
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
     use_for_mailings = models.BooleanField(verbose_name="Use for Club Mailings", default=False)
     notes = models.CharField(verbose_name="Notes", max_length=150, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+
+        # create or update a user record only if we have an email address
+        # this is to support password-less auth for temporary tokens
+        if self.contact.email:
+            if not self.user:
+                user = User.objects.filter(email=self.contact.email).first()
+                if not user:
+                    uname = "".join([random.choice(string.ascii_lowercase) for n in range(24)])
+                    user = User.objects.create_user(username=uname, email=self.contact.email,
+                                                    first_name=self.contact.first_name,
+                                                    last_name=self.contact.last_name)
+                self.user = user
+            else:
+                user = User.objects.get(pk=self.user.id)
+                user.email = self.contact.email
+                user.save()
+
+        super().save(*args, **kwargs)
+
+    # relying on a bit of a hack to ensure we don't delete an EC member
+    def delete(self, *args, **kwargs):
+        if self.user and len(self.user.username) == 24:
+            self.user.delete()
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return "{}: {} {}".format(self.club.name, self.contact.first_name, self.contact.last_name)
@@ -185,7 +215,7 @@ class Membership(models.Model):
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="memberships")
     payment_date = models.DateField(verbose_name="Payment Date")
     payment_type = models.CharField(verbose_name="Payment Type", max_length=2, choices=PAYMENT_TYPE_CHOICES, default="CK")
-    payment_code = models.CharField(verbose_name="Code or Number", max_length=20, blank=True)
+    payment_code = models.CharField(verbose_name="Code or Number", max_length=100, blank=True)
     create_date = models.DateTimeField(verbose_name="Date Recorded", auto_now_add=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 

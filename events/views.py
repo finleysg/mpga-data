@@ -17,7 +17,7 @@ class EventViewSet(viewsets.ModelViewSet):
         """ Optionally filter by year
         """
         queryset = Event.objects.all()
-        year = self.request.query_params.get('year', datetime.today().year)
+        year = self.request.query_params.get('year', None)
 
         if year is not None:
             queryset = queryset.filter(start_date__year=year)

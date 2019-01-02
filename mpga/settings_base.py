@@ -21,6 +21,7 @@ INSTALLED_APPS = (
     "allauth.account",
     "allauth.socialaccount",
     "rest_auth.registration",
+    "drfpasswordless",
     "corsheaders",
     "simple_history",
     "storages",
@@ -33,7 +34,6 @@ INSTALLED_APPS = (
     "events",
     "pages",
     "policies",
-    "register",
 )
 
 MIDDLEWARE = (
@@ -73,7 +73,7 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -83,6 +83,12 @@ REST_FRAMEWORK = {
 
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "core.serializers.UserDetailSerializer"
+}
+
+PASSWORDLESS_AUTH = {
+    "PASSWORDLESS_AUTH_TYPES": ["EMAIL", ],
+    "PASSWORDLESS_EMAIL_NOREPLY_ADDRESS": "noreply@mpga.net",
+    "PASSWORDLESS_REGISTER_NEW_USERS": False
 }
 
 CORS_ORIGIN_ALLOW_ALL = True

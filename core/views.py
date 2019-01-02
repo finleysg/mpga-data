@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Member, SeasonSettings
-from .serializers import MemberSerializer, SettingsSerializer
+from .models import SeasonSettings
+from .serializers import SettingsSerializer
 
 
 class SettingsViewSet(viewsets.ModelViewSet):
@@ -11,8 +11,8 @@ class SettingsViewSet(viewsets.ModelViewSet):
     serializer_class = SettingsSerializer
 
 
-class MemberViewSet(viewsets.ModelViewSet):
-    """ API endpoint to view a single Member
-    """
-    queryset = Member.objects.all()
-    serializer_class = MemberSerializer
+# class MemberViewSet(viewsets.ModelViewSet):
+#     """ API endpoint to view a single Member
+#     """
+#     queryset = Member.objects.all()
+#     serializer_class = MemberSerializer

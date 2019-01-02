@@ -1,9 +1,7 @@
 from rest_framework import serializers
 
 from clubs.serializers import ContactSerializer, GolfCourseSerializer
-from documents.serializers import DocumentSerializer
 from policies.serializers import PolicySerializer
-from register.serializers import RegistrationSerializer
 from .models import *
 
 
