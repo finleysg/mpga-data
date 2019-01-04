@@ -107,7 +107,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
 class SimpleEventSerializer(serializers.ModelSerializer):
 
     location = GolfCourseSerializer()
-    links = EventLinkSerializer(many=True)  # TODO: remove this?
+    links = EventLinkSerializer(many=True)
 
     class Meta:
         model = Event

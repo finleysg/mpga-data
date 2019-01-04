@@ -14,13 +14,17 @@ class EventViewSet(viewsets.ModelViewSet):
             return EventDetailSerializer
 
     def get_queryset(self):
-        """ Optionally filter by year
+        """ Optionally filter by year or tournament
         """
         queryset = Event.objects.all()
-        year = self.request.query_params.get('year', None)
 
+        year = self.request.query_params.get('year', None)
         if year is not None:
             queryset = queryset.filter(start_date__year=year)
+
+        tournament = self.request.query_params.get("tournament", None)
+        if tournament is not None:
+            queryset = queryset.filter(tournament=tournament)
 
         return queryset.order_by("start_date")
 
@@ -28,11 +32,6 @@ class EventViewSet(viewsets.ModelViewSet):
 class AwardViewSet(viewsets.ModelViewSet):
     serializer_class = AwardSerializer
     queryset = Award.objects.all()
-
-
-# class AwardWinnerViewSet(viewsets.ModelViewSet):
-#     serializer_class = AwardWinnerSerializer
-#     queryset = AwardWinner.objects.all()
 
 
 class TournamentViewSet(viewsets.ModelViewSet):
@@ -48,7 +47,3 @@ class TournamentViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(name=name)
 
         return queryset
-
-# class TournamentWinnerViewSet(viewsets.ModelViewSet):
-#     serializer_class = TournamentWinnerSerializer
-#     queryset = TournamentWinner.objects.all()
