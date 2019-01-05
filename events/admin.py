@@ -54,10 +54,10 @@ class EventAdmin(admin.ModelAdmin):
             "classes": ("wide",),
             "fields": ("description", "notes", )
         }),
-        # ("Registration", {
-        #     "fields":  (("registration_start", "early_registration_end", "registration_end", ),
-        #                 ("registration_maximum", "minimum_signup_group_size", "maximum_signup_group_size", ))
-        # }),
+        ("Registration", {
+            "fields":  ("registration_start", "early_registration_end", "registration_end", ),
+            # ("registration_maximum", "minimum_signup_group_size", "maximum_signup_group_size", ))
+        }),
     )
 
     inlines = [FeeInline, PolicyInline, DivisionInline, PointsInline, ChairInline, LinksInLine, ]

@@ -52,7 +52,7 @@ urlpatterns = [
     url(r"^rest-auth/", include("rest_auth.urls")),
     url(r"^rest-auth/registration/", include("rest_auth.registration.urls")),
     # this url is used to generate a password reset email
-    url(r"^member/reset-password-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
+    url(r"^session/reset-password-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
         TemplateView.as_view(template_name="password_reset_confirm.html"),
         name="password_reset_confirm"),
 ]
