@@ -170,11 +170,26 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Team
+        fields = ("id", "year", "club", "group_name", "is_senior", "notes", )
+
+
+class PublicTeamSerializer(serializers.ModelSerializer):
+
     club = PublicClubSerializer(read_only=True)
 
     class Meta:
         model = Team
         fields = ("id", "year", "club", "group_name", "is_senior", "notes", )
+
+
+class MatchPlayResultSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MatchPlayResult
+        fields = ("id", "group_name", "match_date", "home_team", "away_team", "home_team_score", "away_team_score",
+                  "entered_by", "forfeit", )
 
 
 class CommitteeSerializer(serializers.ModelSerializer):

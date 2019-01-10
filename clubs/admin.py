@@ -123,6 +123,18 @@ class AffiliateAdmin(admin.ModelAdmin):
     ordering = ["organization", ]
 
 
+class MatchPlayResultAdmin(admin.ModelAdmin):
+    fields = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score",
+              "forfeit", "entered_by", ]
+    list_display = ["group_name", "match_date", "home_team", "away_team", ]
+    list_filter = ["group_name", "match_date", "forfeit", ]
+    ordering = ["group_name", "match_date", ]
+    raw_id_fields = ("home_team", "away_team", )
+    autocomplete_lookup_fields = {
+        "fk": ["home_team", "away_team", ]
+    }
+
+
 admin.site.register(GolfCourse, GolfCourseAdmin)
 admin.site.register(Club, ClubAdmin)
 admin.site.register(Contact, ContactAdmin)
@@ -130,3 +142,4 @@ admin.site.register(Membership, MembershipAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Committee, CommitteeAdmin)
 admin.site.register(Affiliate, AffiliateAdmin)
+admin.site.register(MatchPlayResult, MatchPlayResultAdmin)

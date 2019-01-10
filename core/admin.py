@@ -18,8 +18,8 @@ from core.models import SeasonSettings
 
 
 class SettingsAdmin(admin.ModelAdmin):
-    fields = ["event_calendar_year", "match_play_year", "member_club_year", "membership_dues", ]
-    list_display = ["event_calendar_year", "match_play_year", "member_club_year", "membership_dues", ]
+    fields = ["event_calendar_year", "match_play_year", "member_club_year", "membership_dues", "match_play_finalized", ]
+    list_display = ["event_calendar_year", ]
     can_delete = False
 
 

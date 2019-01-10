@@ -234,6 +234,24 @@ class Team(models.Model):
         return "{} {}: {}".format(self.year, self.group_name, self.club.name)
 
 
+class MatchPlayResult(models.Model):
+    group_name = models.CharField(verbose_name="Group", max_length=20)
+    match_date = models.DateField(verbose_name="Date Played")
+    home_team = models.ForeignKey(verbose_name="Home Team", to=Club, on_delete=models.DO_NOTHING, related_name="home_team")
+    away_team = models.ForeignKey(verbose_name="Away Team", to=Club, on_delete=models.DO_NOTHING, related_name="away_team")
+    home_team_score = models.DecimalField(verbose_name="Home Team Score", max_digits=3, decimal_places=1)
+    away_team_score = models.DecimalField(verbose_name="Away Team Score", max_digits=3, decimal_places=1)
+    entered_by = models.CharField(verbose_name="Entered By", max_length=60)
+    forfeit = models.BooleanField(verbose_name="Forfeit")
+
+    class Meta:
+        ordering = ["group_name", "match_date", ]
+
+    def __str__(self):
+        return "{} match on {}: {} vs {}".format(
+            self.group_name, self.match_date, self.away_team.name, self.home_team.name)
+
+
 class Committee(models.Model):
     class Meta:
         verbose_name = 'Executive Committee'

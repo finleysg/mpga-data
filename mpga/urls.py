@@ -27,6 +27,7 @@ router.register(r"club-contacts", club_views.ClubContactViewSet, "club-contacts"
 router.register(r"clubs", club_views.ClubViewSet, "clubs")
 router.register(r"memberships", club_views.MembershipViewSet, "memberships")
 router.register(r"teams", club_views.TeamViewSet, "teams")
+router.register(r"match-results", club_views.MatchPlayResultViewSet, "match-results")
 router.register(r"committee", club_views.CommitteeViewSet, "committee")
 router.register(r"affiliates", club_views.AffiliateViewSet, "affiliates")
 router.register(r"announcements", communication_views.AnnouncementViewSet, "announcements")
@@ -45,6 +46,7 @@ urlpatterns = [
     url(r"^api/roles/", club_views.club_roles),
     url(r"^api/club-validation/(?P<club_id>[0-9]+)/$", club_views.club_validation_messages),
     url(r"^api/club-membership/(?P<club_id>[0-9]+)/$", club_views.pay_club_membership),
+    url(r"^api/clubs/validate-contact/(?P<club_id>[0-9]+)/$", club_views.is_club_contact),
     url(r"^api/messages/$", communication_views.ContactMessageView.as_view()),
     url(r"^grappelli/", include("grappelli.urls")),
     url(r"^admin/", admin.site.urls),

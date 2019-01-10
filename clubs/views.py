@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from datetime import date
@@ -56,7 +57,12 @@ class ClubViewSet(viewsets.ModelViewSet):
         else:
             return PublicClubSerializer
 
-    queryset = Club.objects.all()
+    def get_queryset(self):
+        queryset = Club.objects.all()
+        is_by_user = self.request.query_params.get("user", False)
+        if is_by_user:
+            queryset = queryset.filter(club_contacts__user=self.request.user)
+        return queryset
 
 
 class MembershipViewSet(viewsets.ModelViewSet):
@@ -74,13 +80,23 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
 
 class TeamViewSet(viewsets.ModelViewSet):
-    serializer_class = TeamSerializer
+    def get_serializer_class(self):
+        is_edit = self.request.query_params.get("edit", False)
+        if is_edit:
+            return TeamSerializer
+        elif self.action == 'list':
+            return PublicTeamSerializer
+        else:
+            return TeamSerializer
 
     def get_queryset(self):
         queryset = Team.objects.all()
         year = self.request.query_params.get("year", None)
+        club = self.request.query_params.get("club", None)
         if year is not None:
             queryset = queryset.filter(year=year)
+        if club is not None:
+            queryset = queryset.filter(club=club)
         return queryset
 
 
@@ -92,6 +108,17 @@ class CommitteeViewSet(viewsets.ModelViewSet):
 class AffiliateViewSet(viewsets.ModelViewSet):
     serializer_class = AffiliateSerializer
     queryset = Affiliate.objects.all()
+
+
+class MatchPlayResultViewSet(viewsets.ModelViewSet):
+    serializer_class = MatchPlayResultSerializer
+
+    def get_queryset(self):
+        queryset = MatchPlayResult.objects.all()
+        year = self.request.query_params.get("year", None)
+        if year is not None:
+            queryset = queryset.filter(match_date__year=year)
+        return queryset
 
 
 @api_view(('GET',))
@@ -107,9 +134,30 @@ def club_validation_messages(request, club_id):
     return Response(messages)
 
 
+@api_view(("GET",))
+def is_club_contact(request, club_id):
+    club = get_object_or_404(Club, pk=club_id)
+    email = request.query_params.get("email", None)
+    if email:
+        try:
+            club.club_contacts.get(contact__email=email)
+            return Response(True)
+        except ObjectDoesNotExist:
+            return Response(False)
+    else:
+        return Response(False)
+
+#
+# @api_view(("GET",))
+# @permission_classes((permissions.IsAuthenticated,))
+# def get_club_for_user(request):
+#     clubs = list(Club.objects.filter(club_contact__user=request.user))
+#     serializer = ClubSerializer(clubs, many=True, context={"request": request})
+#     return Response(serializer.data)
+
+
 @api_view(("POST",))
 @permission_classes((permissions.IsAuthenticated,))
-@transaction.atomic()
 def pay_club_membership(request, club_id):
     club = get_object_or_404(Club, pk=club_id)
     year = request.data.get("year", None)

@@ -14,6 +14,7 @@ class SeasonSettings(models.Model):
     match_play_year = models.IntegerField(verbose_name="Default year for match play")
     member_club_year = models.IntegerField(verbose_name="Default year for club membership")
     membership_dues = models.IntegerField(verbose_name="Membership dues", default=100)
+    match_play_finalized = models.BooleanField(verbose_name="Match play teams are final", default=False)
 
     @property
     def raven_dsn(self):
