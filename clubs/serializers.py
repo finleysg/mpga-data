@@ -189,7 +189,7 @@ class MatchPlayResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchPlayResult
         fields = ("id", "group_name", "match_date", "home_team", "away_team", "home_team_score", "away_team_score",
-                  "entered_by", "forfeit", )
+                  "entered_by", "forfeit", "notes", )
 
 
 class CommitteeSerializer(serializers.ModelSerializer):

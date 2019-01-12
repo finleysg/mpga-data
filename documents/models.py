@@ -15,6 +15,7 @@ DOCUMENT_TYPE_CHOICES = (
     ("Results", "Results"),
     ("Meeting", "Meeting"),
     ("Match Play", "Match Play"),
+    ("Match Play Brackets", "Match Play Brackets"),
     ("Financial", "Financial"),
     ("Communications", "Communications"),
     ("Other", "Other")

@@ -124,7 +124,7 @@ class AffiliateAdmin(admin.ModelAdmin):
 
 
 class MatchPlayResultAdmin(admin.ModelAdmin):
-    fields = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score",
+    fields = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score", "notes",
               "forfeit", "entered_by", ]
     list_display = ["group_name", "match_date", "home_team", "away_team", ]
     list_filter = ["group_name", "match_date", "forfeit", ]

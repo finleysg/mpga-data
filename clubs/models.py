@@ -243,6 +243,7 @@ class MatchPlayResult(models.Model):
     away_team_score = models.DecimalField(verbose_name="Away Team Score", max_digits=3, decimal_places=1)
     entered_by = models.CharField(verbose_name="Entered By", max_length=60)
     forfeit = models.BooleanField(verbose_name="Forfeit")
+    notes = models.CharField(verbose_name="Notes", max_length=140, blank=True, null=True)
 
     class Meta:
         ordering = ["group_name", "match_date", ]
