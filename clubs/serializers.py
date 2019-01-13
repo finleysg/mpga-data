@@ -48,7 +48,7 @@ class ClubContactRoleSerializer(serializers.ModelSerializer):
 
 
 class ClubContactSerializer(serializers.ModelSerializer):
-    club = serializers.PrimaryKeyRelatedField(read_only=True)
+    # club = serializers.PrimaryKeyRelatedField(read_only=True)
     contact = ContactSerializer()
     roles = ClubContactRoleSerializer(many=True)
 
@@ -59,13 +59,20 @@ class ClubContactSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         roles = validated_data.pop("roles")
         contact = validated_data.pop("contact")
-        cc = ClubContact.objects.create(**validated_data)
 
-        if contact["id"] == 0:
+        if contact.get("id", 0) == 0:
             contact["id"] = None  # mysql won't accept 0
-            cc.contact = Contact.create(club_contact=cc, **contact)
+            cc_contact = Contact.objects.create(**contact)
         else:
-            cc.contact = contact
+            cc_contact = contact
+
+        cc = ClubContact.objects.create(
+            club=validated_data.get("club", None),
+            contact=cc_contact,
+            is_primary=validated_data.get("is_primary", False),
+            use_for_mailings=validated_data.get("use_for_mailings", False),
+            notes=validated_data.get("notes", None)
+        )
 
         for r in roles:
             r["id"] = None  # mysql won't accept 0
