@@ -156,7 +156,7 @@ class SimpleClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", )
+        fields = ("id", "name", "short_name", "golf_course", "website", "type_2", "notes", "size", )
 
 
 class MembershipSerializer(serializers.ModelSerializer):
@@ -194,8 +194,8 @@ class MatchPlayResultSerializer(serializers.ModelSerializer):
 
 class MatchPlayResultListSerializer(serializers.ModelSerializer):
 
-    home_team_name = serializers.CharField(source="club.short_name")
-    away_team_name = serializers.CharField(source="club.short_name")
+    home_team_name = serializers.CharField(source="home_team.short_name")
+    away_team_name = serializers.CharField(source="away_team.short_name")
 
     class Meta:
         model = MatchPlayResult

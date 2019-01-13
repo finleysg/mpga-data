@@ -60,8 +60,11 @@ class ClubViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Club.objects.all()
         is_by_user = self.request.query_params.get("user", False)
+        has_team = self.request.query_params.get("has_team", False)
         if is_by_user:
             queryset = queryset.filter(club_contacts__user=self.request.user)
+        if has_team:
+            queryset = queryset.filter(teams__isnull=False).distinct()
         return queryset
 
 
