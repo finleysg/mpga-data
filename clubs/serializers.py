@@ -179,7 +179,16 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = ("id", "year", "club", "group_name", "is_senior", "notes", )
 
 
-class PublicTeamSerializer(serializers.ModelSerializer):
+class TeamListSerializer(serializers.ModelSerializer):
+
+    club = ClubSerializer(read_only=True)
+
+    class Meta:
+        model = Team
+        fields = ("id", "year", "club", "group_name", "is_senior", "notes", )
+
+
+class PublicTeamListSerializer(serializers.ModelSerializer):
 
     club = PublicClubSerializer(read_only=True)
 

@@ -84,12 +84,12 @@ class MembershipViewSet(viewsets.ModelViewSet):
 class TeamViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
-        if is_edit or self.request.user.is_authenticated:
+        if is_edit:
             return TeamSerializer
-        elif self.action == 'list':
-            return PublicTeamSerializer
+        elif self.action == 'list' and self.request.user.is_authenticated:
+            return TeamListSerializer
         else:
-            return TeamSerializer
+            return PublicTeamListSerializer
 
     def get_queryset(self):
         queryset = Team.objects.all()
