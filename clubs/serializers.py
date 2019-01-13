@@ -123,7 +123,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "short_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
 
     def update(self, instance, validated_data):
 
@@ -147,7 +147,7 @@ class PublicClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "short_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
 
 
 class SimpleClubSerializer(serializers.ModelSerializer):
@@ -190,6 +190,17 @@ class MatchPlayResultSerializer(serializers.ModelSerializer):
         model = MatchPlayResult
         fields = ("id", "group_name", "match_date", "home_team", "away_team", "home_team_score", "away_team_score",
                   "entered_by", "forfeit", "notes", )
+
+
+class MatchPlayResultListSerializer(serializers.ModelSerializer):
+
+    home_team_name = serializers.CharField(source="club.short_name")
+    away_team_name = serializers.CharField(source="club.short_name")
+
+    class Meta:
+        model = MatchPlayResult
+        fields = ("id", "group_name", "match_date", "home_team", "away_team", "home_team_score", "away_team_score",
+                  "entered_by", "forfeit", "notes", "home_team_name", "away_team_name", )
 
 
 class CommitteeSerializer(serializers.ModelSerializer):

@@ -17,6 +17,8 @@ class SeasonSettings(models.Model):
     match_play_divisions = models.CharField(verbose_name="Match play divisions", max_length=150, default="")
     match_play_groups = models.CharField(verbose_name="Match play groups", max_length=250, default="")
     match_play_finalized = models.BooleanField(verbose_name="Match play teams are final", default=False)
+    match_play_forfeit_percentage = models.DecimalField(verbose_name="Forfeit winner percentage",
+                                                        decimal_places=1, max_digits=3, default=66.6)
 
     @property
     def raven_dsn(self):

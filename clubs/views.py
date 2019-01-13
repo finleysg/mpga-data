@@ -111,7 +111,11 @@ class AffiliateViewSet(viewsets.ModelViewSet):
 
 
 class MatchPlayResultViewSet(viewsets.ModelViewSet):
-    serializer_class = MatchPlayResultSerializer
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return MatchPlayResultListSerializer
+        else:
+            return MatchPlayResultSerializer
 
     def get_queryset(self):
         queryset = MatchPlayResult.objects.all()

@@ -45,7 +45,7 @@ class GolfCourseAdmin(admin.ModelAdmin):
 class ClubAdmin(nested_admin.NestedModelAdmin):
     fieldsets = (
         (None, {
-            "fields": (("name", "type_2", ), "golf_course", "website", "size", "notes", )
+            "fields": (("name", "type_2", ), "short_name", "golf_course", "website", "size", "notes", )
         }),
     )
     inlines = [ContactInline, ]
