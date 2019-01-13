@@ -247,7 +247,7 @@ class MatchPlayResult(models.Model):
     notes = models.CharField(verbose_name="Notes", max_length=140, blank=True, null=True)
 
     class Meta:
-        ordering = ["group_name", "match_date", ]
+        ordering = ["-match_date", "group_name", ]
 
     def __str__(self):
         return "{} match on {}: {} vs {}".format(
