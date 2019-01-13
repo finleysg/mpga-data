@@ -29,10 +29,14 @@ class ContactSerializer(serializers.ModelSerializer):
 
 class PublicContactSerializer(serializers.ModelSerializer):
 
+    primary_phone = serializers.CharField(source="public_primary_phone")
+    alternate_phone = serializers.CharField(source="public_alternate_phone")
+    email = serializers.CharField(source="public_email")
+
     class Meta:
         model = Contact
-        fields = ("id", "first_name", "last_name", "contact_type", "public_phone", "public_email",
-                  "public_address", "notes", )
+        fields = ("id", "first_name", "last_name", "contact_type", "primary_phone", "alternate_phone",
+                  "email", "city", "notes", )
 
 
 class ClubContactRoleSerializer(serializers.ModelSerializer):

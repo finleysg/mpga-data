@@ -19,7 +19,7 @@ class GolfCourseViewSet(viewsets.ModelViewSet):
 class ContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
-        if is_edit:
+        if is_edit or self.request.user.is_authenticated:
             return ContactSerializer
         else:
             return PublicContactSerializer
@@ -38,7 +38,7 @@ class ContactViewSet(viewsets.ModelViewSet):
 class ClubContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
-        if is_edit:
+        if is_edit or self.request.user.is_authenticated:
             return ClubContactSerializer
         else:
             return PublicClubContactSerializer
@@ -49,7 +49,7 @@ class ClubContactViewSet(viewsets.ModelViewSet):
 class ClubViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
-        if is_edit:
+        if is_edit or self.request.user.is_authenticated:
             return ClubSerializer
         elif self.action == 'list':
             return SimpleClubSerializer
@@ -84,7 +84,7 @@ class MembershipViewSet(viewsets.ModelViewSet):
 class TeamViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
-        if is_edit:
+        if is_edit or self.request.user.is_authenticated:
             return TeamSerializer
         elif self.action == 'list':
             return PublicTeamSerializer

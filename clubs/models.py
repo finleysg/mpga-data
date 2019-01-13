@@ -109,21 +109,21 @@ class Contact(models.Model):
     @property
     def public_email(self):
         if self.email:
-            return str(self.email).split("@")[1]
+            return "xxxxxx@{}".format(str(self.email).split("@")[1])
         else:
             return ""
 
     @property
-    def public_phone(self):
+    def public_primary_phone(self):
         if self.primary_phone:
-            return str(self.primary_phone).split("-")[0]
+            return "{}-xxx-xxxx".format(str(self.primary_phone).split("-")[0])
         else:
             return ""
 
     @property
-    def public_address(self):
-        if self.has_address:
-            return self.city
+    def public_alternate_phone(self):
+        if self.alternate_phone:
+            return "{}-xxx-xxxx".format(str(self.alternate_phone).split("-")[0])
         else:
             return ""
 

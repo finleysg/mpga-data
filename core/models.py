@@ -20,6 +20,10 @@ class SeasonSettings(models.Model):
     match_play_forfeit_percentage = models.DecimalField(verbose_name="Forfeit winner percentage",
                                                         decimal_places=1, max_digits=3, default=66.6)
 
+    class Meta:
+        verbose_name = "Season Settings"
+        verbose_name_plural = "Season Settings"
+
     @property
     def raven_dsn(self):
         return settings.RAVEN_DSN
