@@ -11,6 +11,8 @@ PAGE_TYPE_CHOICES = (
     ("CC", "Code of Conduct"),
     ("OM", "Our Mission"),
     ("EC", "Executive Committee"),
+    ("MP", "Match Play Signup"),
+    ("FQ", "FAQ"),
 )
 
 
