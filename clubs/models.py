@@ -216,6 +216,9 @@ class ClubContactRole(models.Model):
 
 
 class Membership(models.Model):
+    class Meta:
+        ordering = ["-year", "club__name", ]
+
     year = models.IntegerField(verbose_name="Golf Season")
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="memberships")
     payment_date = models.DateField(verbose_name="Payment Date")

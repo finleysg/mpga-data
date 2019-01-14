@@ -2,6 +2,8 @@ import os
 from django.conf import settings
 from templated_email import send_templated_mail
 from templated_email import InlineImage
+
+from clubs.models import Contact
 from events.models import EventChair, Event
 
 logo_file = os.path.join(settings.BASE_DIR, "templates/templated_email/mpga-logo.jpg")
@@ -37,6 +39,10 @@ def resolve_recipients(message):
         return contacts
     elif message.message_type == "match-play":
         return ["vice-president@mgpa.net", ]
+    elif message.message_type == "ec":
+        name = message.event.split(" ")
+        contacts = Contact.objects.filter(last_name=name[1]).filter(first_name=name[0])
+        return [c.email for c in contacts]
     else:
         return ["secretary@mpga.net", ]
 
