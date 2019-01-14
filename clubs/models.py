@@ -166,6 +166,10 @@ class Club(models.Model):
 
 
 class ClubContact(models.Model):
+
+    class Meta:
+        ordering = ["contact__last_name", "contact__first_name", ]
+
     club = models.ForeignKey(verbose_name="Club", to=Club, on_delete=models.DO_NOTHING, related_name="club_contacts")
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.CASCADE, related_name="contact_to_club")
     user = models.ForeignKey(verbose_name="User", to=User, on_delete=models.CASCADE, blank=True, null=True)
