@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     "corsheaders",
     "simple_history",
     "storages",
+    "anymail",
     "imagekit",
     "nested_admin",
     "clubs",
