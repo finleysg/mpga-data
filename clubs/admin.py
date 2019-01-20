@@ -96,7 +96,7 @@ class MembershipAdmin(DefaultFilterMixIn):
 
 
 class TeamAdmin(DefaultFilterMixIn):
-    fields = ["year", "club", "group_name", "is_senior", ]
+    fields = ["year", "club", "group_name", "is_senior", "notes", ]
     list_display = ["club", "group_name", "is_senior", "year", ]
     list_display_links = ["club", ]
     list_filter = ["year", "group_name", "is_senior", ]

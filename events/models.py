@@ -47,6 +47,9 @@ class AwardWinner(models.Model):
     winner = models.CharField(verbose_name="Award Winner", max_length=100)
     notes = models.CharField(verbose_name="Notes", blank=True, null=True, max_length=140)
 
+    class Meta:
+        ordering = ["-year", ]
+
     def __str__(self):
         return "{} {}".format(self.year, self.award)
 
@@ -80,6 +83,7 @@ class TournamentWinner(models.Model):
     class Meta:
         verbose_name = 'Competition Winner'
         verbose_name_plural = 'Competition Winners'
+        ordering = ["-year", ]
 
     def __str__(self):
         return "{} {}".format(self.year, self.tournament)

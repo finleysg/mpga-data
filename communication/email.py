@@ -44,7 +44,7 @@ def resolve_recipients(message):
         contacts = Contact.objects.filter(last_name=name[1]).filter(first_name=name[0])
         return [c.email for c in contacts]
     else:
-        return ["secretary@mpga.net", ]
+        return ["info@mpga.net", ]
 
 
 def resolve_template(message):
