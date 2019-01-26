@@ -1,0 +1,12 @@
+{% extends "templated_email/email_base.html" %}
+{% block subject %}MGPA Dues Confirmation{% endblock %}
+{% block content %}
+<p style="margin: 0;font-size: 14px;margin-bottom: 10px;">Thank you for joining us for the {{year}} season and for supporting the Minnesota
+    Public Golf Association. Members of {{club_name}} are now fully eligible to register for
+    tournaments and participate in team match play.</p>
+<p style="margin: 0;font-size: 14px;margin-bottom: 10px;">You are receiving this confirmation because you are listed as a contact for
+    {{club_name}}. If you are no longer affiliated with this club, please send a note to
+    <a href="mailto:secretary@mpga.net">secretary@mpga.net</a> and we will remove you from that
+    club's contact list.</p>
+<p style="margin: 0;font-size: 14px;margin-bottom: 10px;">Hit 'em long and straight!</p>
+{% endblock %}

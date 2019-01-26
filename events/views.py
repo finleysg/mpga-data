@@ -47,3 +47,18 @@ class TournamentViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(name=name)
 
         return queryset
+
+
+class EventLinkViewSet(viewsets.ModelViewSet):
+    serializer_class = EventLinkSerializer
+
+    def get_queryset(self):
+        queryset = EventLink.objects.all()
+        tournament = self.request.query_params.get("tournament", None)
+
+        if tournament is not None:
+            queryset = queryset.filter(event__tournament__id=tournament)
+            # baked in assumption: just "history-like" links, not operational links
+            queryset = queryset.exclude(link_type="Tee Times").exclude(link_type="Registration")
+
+        return queryset

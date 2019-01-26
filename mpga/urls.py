@@ -35,6 +35,7 @@ router.register(r"settings", core_views.SettingsViewSet, "settings")
 router.register(r"documents", document_views.DocumentViewSet, "documents")
 router.register(r"photos", document_views.PhotoViewSet, "photos")
 router.register(r"events", event_views.EventViewSet, "events"),
+router.register(r"event-links", event_views.EventLinkViewSet, "event-links"),
 router.register(r"awards", event_views.AwardViewSet, "awards"),
 router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
 router.register(r"pages", page_views.LandingPageViewSet, "pages")

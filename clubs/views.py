@@ -1,3 +1,5 @@
+import logging
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from datetime import date
@@ -6,6 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from clubs.validation import check_club
+from communication.email import send_dues_confirmation
 from core.models import SeasonSettings
 from core.payments import stripe_charge
 from .serializers import *
@@ -169,7 +172,6 @@ def pay_club_membership(request, club_id):
     year = request.data.get("year", None)
     token = request.data.get("token", None)
 
-    # TODO: can this be truly transactional?
     # process payment via Stripe
     config = SeasonSettings.objects.current_settings()
     description = "{} membership dues for {}".format(year, club.name)
@@ -178,6 +180,12 @@ def pay_club_membership(request, club_id):
     # create our membership object
     mem = Membership(year=year, club=club, payment_date=date.today(), payment_type="OL", payment_code=charge.id)
     mem.save()
+
+    try:
+        send_dues_confirmation(year, club)
+    except Exception as exc:
+        logger = logging.getLogger(__name__)
+        logger.error(exc, extra={"request": request})
 
     serializer = MembershipSerializer(mem, context={"request": request})
     return Response(serializer.data)

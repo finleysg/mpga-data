@@ -56,3 +56,19 @@ def resolve_template(message):
         return "contact_message.html"
     else:
         return "contact_message.html"
+
+
+def send_dues_confirmation(year, club):
+
+    send_templated_mail(
+        template_name="dues_confirmation.html",
+        from_email="postmaster@mpga.net",
+        recipient_list=[cc.email for cc in club.contacts.all() if cc.email],
+        context={
+            "logo_image": inline_image,
+            "year": year,
+            "club_name": club.name
+        },
+        template_suffix="html",
+        headers={"Reply-To": "no-reply@mpga.net"}
+    )
