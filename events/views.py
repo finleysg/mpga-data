@@ -1,9 +1,10 @@
-from datetime import datetime
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import permission_classes
 
-from rest_framework import viewsets
 from .serializers import *
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class EventViewSet(viewsets.ModelViewSet):
     """ API endpoint to view Events
     """
@@ -29,11 +30,13 @@ class EventViewSet(viewsets.ModelViewSet):
         return queryset.order_by("start_date")
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class AwardViewSet(viewsets.ModelViewSet):
     serializer_class = AwardSerializer
     queryset = Award.objects.all()
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class TournamentViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentSerializer
 
@@ -49,6 +52,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class EventLinkViewSet(viewsets.ModelViewSet):
     serializer_class = EventLinkSerializer
 

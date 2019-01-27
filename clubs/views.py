@@ -14,11 +14,13 @@ from core.payments import stripe_charge
 from .serializers import *
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class GolfCourseViewSet(viewsets.ModelViewSet):
     serializer_class = GolfCourseSerializer
     queryset = GolfCourse.objects.all()
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class ContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
@@ -38,6 +40,7 @@ class ContactViewSet(viewsets.ModelViewSet):
         return queryset.order_by("last_name", "first_name", )
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class ClubContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
@@ -49,6 +52,7 @@ class ClubContactViewSet(viewsets.ModelViewSet):
     queryset = ClubContact.objects.all()
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class ClubViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
@@ -70,6 +74,7 @@ class ClubViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class MembershipViewSet(viewsets.ModelViewSet):
     serializer_class = MembershipSerializer
 
@@ -84,6 +89,7 @@ class MembershipViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class TeamViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         is_edit = self.request.query_params.get("edit", False)
@@ -105,16 +111,19 @@ class TeamViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class CommitteeViewSet(viewsets.ModelViewSet):
     serializer_class = CommitteeSerializer
     queryset = Committee.objects.all()
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class AffiliateViewSet(viewsets.ModelViewSet):
     serializer_class = AffiliateSerializer
     queryset = Affiliate.objects.all()
 
 
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class MatchPlayResultViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
@@ -131,12 +140,14 @@ class MatchPlayResultViewSet(viewsets.ModelViewSet):
 
 
 @api_view(('GET',))
+@permission_classes((permissions.AllowAny,))
 def club_roles(request):
     roles = ClubContactRole._meta.get_field('role').choices
     return Response([r[0] for r in roles])
 
 
 @api_view(("GET",))
+@permission_classes((permissions.AllowAny,))
 def club_validation_messages(request, club_id):
     club = get_object_or_404(Club, pk=club_id)
     messages = check_club(club)
@@ -144,6 +155,7 @@ def club_validation_messages(request, club_id):
 
 
 @api_view(("GET",))
+@permission_classes((permissions.AllowAny,))
 def is_club_contact(request, club_id):
     club = get_object_or_404(Club, pk=club_id)
     email = request.query_params.get("email", None)
@@ -155,14 +167,6 @@ def is_club_contact(request, club_id):
             return Response(False)
     else:
         return Response(False)
-
-#
-# @api_view(("GET",))
-# @permission_classes((permissions.IsAuthenticated,))
-# def get_club_for_user(request):
-#     clubs = list(Club.objects.filter(club_contact__user=request.user))
-#     serializer = ClubSerializer(clubs, many=True, context={"request": request})
-#     return Response(serializer.data)
 
 
 @api_view(("POST",))

@@ -1,8 +1,10 @@
-from rest_framework import viewsets
-from .models import *
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import permission_classes
+
 from .serializers import *
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
 
@@ -24,6 +26,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
 

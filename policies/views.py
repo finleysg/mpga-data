@@ -1,9 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import permission_classes
 
 from .models import Policy
 from .serializers import PolicySerializer
 
 
+@permission_classes(permissions.IsAuthenticatedOrReadOnly)
 class PolicyViewSet(viewsets.ModelViewSet):
     serializer_class = PolicySerializer
 
