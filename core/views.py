@@ -5,7 +5,7 @@ from .models import SeasonSettings
 from .serializers import SettingsSerializer
 
 
-@permission_classes(permissions.IsAuthenticatedOrReadOnly)
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class SettingsViewSet(viewsets.ModelViewSet):
     queryset = SeasonSettings.objects.all()
     serializer_class = SettingsSerializer

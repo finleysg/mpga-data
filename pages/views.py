@@ -5,7 +5,7 @@ from .models import LandingPage
 from .serializers import LandingPageSerializer
 
 
-@permission_classes(permissions.IsAuthenticatedOrReadOnly)
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class LandingPageViewSet(viewsets.ModelViewSet):
     serializer_class = LandingPageSerializer
 

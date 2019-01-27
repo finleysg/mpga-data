@@ -5,7 +5,7 @@ from .models import Policy
 from .serializers import PolicySerializer
 
 
-@permission_classes(permissions.IsAuthenticatedOrReadOnly)
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class PolicyViewSet(viewsets.ModelViewSet):
     serializer_class = PolicySerializer
 
