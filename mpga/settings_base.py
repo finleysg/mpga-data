@@ -28,6 +28,7 @@ INSTALLED_APPS = (
     "anymail",
     "imagekit",
     "nested_admin",
+    "report_builder",
     "clubs",
     "communication",
     "core",
