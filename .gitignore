@@ -28,3 +28,4 @@ mpga-data.iml
 
 db-backup.sh
 *.sql
+venv/
