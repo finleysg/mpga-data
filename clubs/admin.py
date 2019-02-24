@@ -74,11 +74,12 @@ class ContactAdmin(admin.ModelAdmin):
             "fields": ("address_txt", "city", "state", "zip",)
         }),
     )
-    list_display = ["last_name", "first_name", "email", "primary_phone", "contact_type", ]
+    list_display = ["last_name", "first_name", "email", "primary_phone", "alternate_phone", "contact_type", ]
+    list_editable = ["email", "primary_phone", "alternate_phone", "contact_type", ]
     list_display_links = ("last_name", )
     list_filter = ["contact_type", ]
     ordering = ["last_name", "first_name", ]
-    search_fields = ["last_name", "first_name", ]
+    search_fields = ["last_name", "first_name", "email", ]
 
 
 class MembershipAdmin(DefaultFilterMixIn):
@@ -97,7 +98,8 @@ class MembershipAdmin(DefaultFilterMixIn):
 
 class TeamAdmin(DefaultFilterMixIn):
     fields = ["year", "club", "group_name", "is_senior", "notes", ]
-    list_display = ["club", "group_name", "is_senior", "year", ]
+    list_display = ["club", "year", "group_name", "is_senior", "notes", ]
+    list_editable = ["group_name", "is_senior", ]
     list_display_links = ["club", ]
     list_filter = ["year", "group_name", "is_senior", ]
     ordering = ["club", "year", ]
@@ -126,7 +128,9 @@ class AffiliateAdmin(admin.ModelAdmin):
 class MatchPlayResultAdmin(admin.ModelAdmin):
     fields = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score", "notes",
               "forfeit", "entered_by", ]
-    list_display = ["group_name", "match_date", "home_team", "away_team", ]
+    list_display = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score",
+                    "forfeit", "notes", ]
+    list_display_links = ["group_name", "match_date", ]
     list_filter = ["group_name", "match_date", "forfeit", ]
     ordering = ["group_name", "match_date", ]
     raw_id_fields = ("home_team", "away_team", )
