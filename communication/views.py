@@ -20,7 +20,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+@permission_classes((permissions.AllowAny,))
 class ContactMessageView(CreateAPIView):
     serializer_class = ContactMessageSerializer
     queryset = ContactMessage.objects.all()
