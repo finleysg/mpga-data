@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import permission_classes
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .serializers import *
 
@@ -29,6 +30,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
+    parser_classes = (MultiPartParser, FormParser, )
 
     def get_queryset(self):
         """ Optionally filter by code
