@@ -5,6 +5,7 @@ from imagekit.models import ImageSpecField
 from pilkit.processors import ResizeToFit
 from simple_history.models import HistoricalRecords
 
+from documents.managers import PhotoManager
 from events.models import Tournament
 
 DOCUMENT_TYPE_CHOICES = (
@@ -95,6 +96,7 @@ class Photo(models.Model):
     last_update = models.DateTimeField(auto_now=True)
 
     history = HistoricalRecords()
+    objects = PhotoManager()
 
     def __str__(self):
         return "{} {}: {}".format(self.year, self.photo_type, self.caption)

@@ -49,6 +49,8 @@ urlpatterns = [
     url(r"^api/club-membership/(?P<club_id>[0-9]+)/$", club_views.pay_club_membership),
     url(r"^api/clubs/validate-contact/(?P<club_id>[0-9]+)/$", club_views.is_club_contact),
     url(r"^api/messages/$", communication_views.ContactMessageView.as_view()),
+    url(r"^api/tournament-photos/random/(?P<tournament>[0-9]+)/(?P<year>[0-9]+)/$", document_views.random_photo),
+    url(r"^api/tournament-photos/years/(?P<tournament>[0-9]+)/$", document_views.available_years),
     url(r"^grappelli/", include("grappelli.urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^nested_admin/", include("nested_admin.urls")),

@@ -182,17 +182,21 @@ class ClubContact(models.Model):
         # create or update a user record only if we have an email address
         # this is to support password-less auth for temporary tokens
         if self.contact.email:
+            uname = "".join([random.choice(string.ascii_lowercase) for n in range(24)])
             if not self.user:
                 user = User.objects.filter(email=self.contact.email).first()
                 if not user:
-                    uname = "".join([random.choice(string.ascii_lowercase) for n in range(24)])
-                    user = User.objects.create_user(username=uname, email=self.contact.email,
+                    user = User.objects.create_user(username=uname,
+                                                    email=self.contact.email,
+                                                    password=uname,
                                                     first_name=self.contact.first_name,
                                                     last_name=self.contact.last_name)
                 self.user = user
             else:
                 user = User.objects.get(pk=self.user.id)
                 user.email = self.contact.email
+                if user.password.startswith('!'):  # i.e. no password set
+                    user.set_password(uname)
                 user.save()
 
         super().save(*args, **kwargs)
