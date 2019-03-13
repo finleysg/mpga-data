@@ -22,12 +22,30 @@ class PhotoTagSerializer(serializers.ModelSerializer):
 
 class DocumentSerializer(serializers.ModelSerializer):
 
-    tournament = serializers.PrimaryKeyRelatedField(queryset=Tournament.objects.all(), required=False)
-    tags = DocumentTagSerializer(many=True)
+    tags = DocumentTagSerializer(many=True, required=False)
 
     class Meta:
         model = Document
         fields = ("id", "year", "title", "document_type", "file", "tournament", "created_by", "last_update", "tags", )
+
+    def create(self, validated_data):
+        tags = self.context["request"].data.get("tags", None)
+        tournament = validated_data.get("tournament", None)
+        year = validated_data.pop("year")
+        title = validated_data.pop("title")
+        doc_type = validated_data.pop("doc_type")
+        file = validated_data.pop("file")
+        created_by = self.context["request"].user
+
+        doc = Document(year=year, title=title, doc_type=doc_type, file=file, tournament=tournament, created_by=created_by)
+        doc.save()
+
+        for tag in tags.split("|"):
+            t, created = Tag.objects.get_or_create(name=tag)
+            dt = DocumentTag(document=doc, tag=t)
+            dt.save()
+
+        return doc
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -40,10 +58,6 @@ class PhotoSerializer(serializers.ModelSerializer):
         model = Photo
         fields = ("id", "year", "caption", "photo_type", "tournament", "thumbnail_url", "image_url", "raw_image",
                   "created_by", "last_update", "tags", )
-        # extra_kwargs = {'tags': {'required': False}}
-
-    # def validate(self, data):
-    #     return data
 
     def create(self, validated_data):
         tags = self.context["request"].data.get("tags", None)
