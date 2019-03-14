@@ -66,3 +66,9 @@ class EventLinkViewSet(viewsets.ModelViewSet):
             queryset = queryset.exclude(link_type="Tee Times").exclude(link_type="Registration")
 
         return queryset
+
+
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+class TournamentWinnerViewSet(viewsets.ModelViewSet):
+    serializer_class = TournamentWinnerSerializer
+    queryset = TournamentWinner.objects.all()

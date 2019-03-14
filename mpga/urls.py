@@ -38,6 +38,7 @@ router.register(r"events", event_views.EventViewSet, "events"),
 router.register(r"event-links", event_views.EventLinkViewSet, "event-links"),
 router.register(r"awards", event_views.AwardViewSet, "awards"),
 router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
+router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
 router.register(r"pages", page_views.LandingPageViewSet, "pages")
 router.register(r"policies", policy_views.PolicyViewSet, "policies")
 
