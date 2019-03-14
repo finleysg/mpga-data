@@ -33,11 +33,11 @@ class DocumentSerializer(serializers.ModelSerializer):
         tournament = validated_data.get("tournament", None)
         year = validated_data.pop("year")
         title = validated_data.pop("title")
-        doc_type = validated_data.pop("doc_type")
+        document_type = validated_data.pop("document_type")
         file = validated_data.pop("file")
         created_by = self.context["request"].user
 
-        doc = Document(year=year, title=title, doc_type=doc_type, file=file, tournament=tournament, created_by=created_by)
+        doc = Document(year=year, title=title, document_type=document_type, file=file, tournament=tournament, created_by=created_by)
         doc.save()
 
         for tag in tags.split("|"):
