@@ -102,9 +102,8 @@ class TournamentWinnerAdmin(admin.ModelAdmin):
             "fields": ("notes", )
         }),
     )
-    list_display = ["year", "tournament", "winner", "winner_club", "co_winner", "co_winner_club",
-                    "flight_or_division", "score", "is_net", ]
-    list_editable = ["winner", "winner_club", "co_winner", "co_winner_club", "flight_or_division", "score", "is_net", ]
+    list_display = ["year", "tournament", "location", "winner", "winner_club", "co_winner", "co_winner_club",
+                    "flight_or_division", ]
     list_filter = ("year", "tournament", "flight_or_division", "is_net", )
     save_on_top = True
 
