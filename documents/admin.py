@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from .models import Document, Tag, DocumentTag, PhotoTag, Photo
 
 
@@ -36,16 +37,20 @@ class TagAdmin(admin.ModelAdmin):
 
 class PhotoAdmin(admin.ModelAdmin):
     fields = ["year", "photo_type", "tournament", "caption", "raw_image", "created_by", "last_update", ]
-    readonly_fields = ("created_by", "last_update", )
+    readonly_fields = ("image_preview", "created_by", "last_update", )
     inlines = [PhotoTagInline, ]
-    list_display = ["year", "tournament", "photo_type", "caption", "created_by", "last_update", ]
+    list_display = ["year", "tournament", "photo_type", "caption", "image_preview", "created_by", "last_update", ]
     list_filter = ("year", "tournament", "photo_type", )
+    list_editable = ["caption", ]
     save_on_top = True
 
     def save_model(self, request, obj, form, change):
         if not change:
             obj.created_by = request.user
         obj.save()
+
+    def image_preview(self, obj):
+        return mark_safe('<img src="{url}" width="200" />'.format(url = obj.raw_image.url))
 
 
 admin.site.register(Document, DocumentAdmin)
