@@ -1,27 +1,84 @@
 import csv
 
 from django.http import HttpResponse
-from clubs.models import ClubContact
 
 
-def export_addresses(modeladmin, request, queryset):
-    response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = "attachment; filename='addresses.csv'"
-    writer = csv.writer(response)
-    writer.writerow(["Club", "Address", "City", "State", "Zip", "Contact", ])
-    clubs = queryset.values_list("name", "address_txt", "city", "state", "zip", "id", )
-    for club in clubs:
-        clubcontacts = ClubContact.objects.filter(club_id=club[5]).filter(is_primary=True)
-        if len(clubcontacts) == 1:
-            club = club[:-1] + ("{} {}".format(clubcontacts[0].contact.first_name, clubcontacts[0].contact.last_name), )
-            writer.writerow(club)
-        else:
-            for contact in clubcontacts:
-                if contact.contact.contact_type == "Facilities":
-                    contact_name = "{} {}".format(contact.contact.first_name, contact.contact.last_name)
-                    club = club[:-1] + (contact_name, )
-                    writer.writerow(club)
-    return response
+class ExportCsvMixin:
+    def export_as_csv(self, request, queryset):
+
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = writer.writerow([getattr(obj, field) for field in field_names])
+
+        return response
+
+    export_as_csv.short_description = "Export Selected"
 
 
-export_addresses.short_description = "Export Addresses"
+class ExportClubContactsMixin:
+    def export_captains(self, request, queryset):
+
+        meta = self.model._meta
+        field_names = ["Club", "Captain", "Email", "Phone", "Roles", "Notes", ]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=Captains.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            roles = ",".join([r.role for r in obj.roles.filter(role__contains="Captain")])
+            if roles:
+                row = writer.writerow([obj.club, "{} {}".format(obj.contact.first_name, obj.contact.last_name),
+                                      obj.contact.email, obj.contact.primary_phone, roles, obj.notes, ])
+
+        return response
+
+    export_captains.short_description = "Export Captains"
+
+    def export_primary_contacts(self, request, queryset):
+
+        meta = self.model._meta
+        field_names = ["Club", "Contact", "Email", "Phone", "Roles", "Notes", ]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=PrimaryContacts.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            roles = ",".join([r.role for r in obj.roles.all()])
+            if obj.is_primary:
+                row = writer.writerow([obj.club, "{} {}".format(obj.contact.first_name, obj.contact.last_name),
+                                       obj.contact.email, obj.contact.primary_phone, roles, obj.notes, ])
+
+        return response
+
+    export_primary_contacts.short_description = "Export Primary Contacts"
+
+    def export_mailings(self, request, queryset):
+
+        meta = self.model._meta
+        field_names = ["Club", "Contact", "Address", "City", "State", "Zip", ]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=ClubMailingAddresses.csv'
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            if obj.use_for_mailings:
+                row = writer.writerow([obj.club, "{} {}".format(obj.contact.first_name, obj.contact.last_name),
+                                       obj.contact.address_txt, obj.contact.city, obj.contact.state,
+                                       obj.contact.zip, ])
+
+        return response
+
+    export_mailings.short_description = "Export Mailing Addresses"

@@ -2,6 +2,7 @@ from datetime import datetime
 from django.contrib import admin
 import nested_admin
 
+from clubs.actions import ExportCsvMixin, ExportClubContactsMixin
 from clubs.mixins import DefaultFilterMixIn
 from .models import *
 
@@ -26,7 +27,7 @@ class ContactInline(nested_admin.NestedTabularInline):
     }
 
 
-class GolfCourseAdmin(admin.ModelAdmin):
+class GolfCourseAdmin(admin.ModelAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {
             "fields": ("name", "email", "phone", "website", "logo", "notes", )
@@ -40,9 +41,10 @@ class GolfCourseAdmin(admin.ModelAdmin):
     ordering = ["name", ]
     search_fields = ["name", ]
     save_on_top = True
+    actions = ["export_as_csv", ]
 
 
-class ClubAdmin(nested_admin.NestedModelAdmin):
+class ClubAdmin(nested_admin.NestedModelAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {
             "fields": (("name", "type_2", ), "short_name", "golf_course", "website", "size", "notes", )
@@ -60,9 +62,10 @@ class ClubAdmin(nested_admin.NestedModelAdmin):
     autocomplete_lookup_fields = {
         "fk": ["golf_course", ]
     }
+    actions = ["export_as_csv", ]
 
 
-class ContactAdmin(admin.ModelAdmin):
+class ContactAdmin(admin.ModelAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {
             "fields": ("first_name", "last_name", "contact_type", )
@@ -80,9 +83,10 @@ class ContactAdmin(admin.ModelAdmin):
     list_filter = ["contact_type", ]
     ordering = ["last_name", "first_name", ]
     search_fields = ["last_name", "first_name", "email", ]
+    actions = ["export_as_csv", ]
 
 
-class MembershipAdmin(DefaultFilterMixIn):
+class MembershipAdmin(DefaultFilterMixIn, ExportCsvMixin):
     fields = ["year", "club", "payment_date", "payment_type", "payment_code", "notes", ]
     readonly_fields = ["create_date", ]
     list_display = ["club", "payment_type", "payment_date", "year", ]
@@ -94,9 +98,10 @@ class MembershipAdmin(DefaultFilterMixIn):
     autocomplete_lookup_fields = {
         "fk": ["club", ]
     }
+    actions = ["export_as_csv", ]
 
 
-class TeamAdmin(DefaultFilterMixIn):
+class TeamAdmin(DefaultFilterMixIn, ExportCsvMixin):
     fields = ["year", "club", "group_name", "is_senior", "notes", ]
     list_display = ["club", "year", "group_name", "is_senior", "notes", ]
     list_editable = ["group_name", "is_senior", ]
@@ -109,6 +114,7 @@ class TeamAdmin(DefaultFilterMixIn):
     autocomplete_lookup_fields = {
         "fk": ["club", ]
     }
+    actions = ["export_as_csv", ]
 
 
 class CommitteeAdmin(admin.ModelAdmin):
@@ -125,7 +131,7 @@ class AffiliateAdmin(admin.ModelAdmin):
     ordering = ["organization", ]
 
 
-class MatchPlayResultAdmin(admin.ModelAdmin):
+class MatchPlayResultAdmin(admin.ModelAdmin, ExportCsvMixin):
     fields = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score", "notes",
               "forfeit", "entered_by", ]
     list_display = ["group_name", "match_date", "home_team", "home_team_score", "away_team", "away_team_score",
@@ -137,6 +143,17 @@ class MatchPlayResultAdmin(admin.ModelAdmin):
     autocomplete_lookup_fields = {
         "fk": ["home_team", "away_team", ]
     }
+    actions = ["export_as_csv", ]
+
+
+@admin.register(ClubContact)
+class ClubContactAdmin(admin.ModelAdmin, ExportClubContactsMixin):
+    fields = ["club", "contact", "user", "is_primary", "use_for_mailings", "notes", ]
+    list_display = ["club", "contact", "is_primary", "use_for_mailings", ]
+    list_display_links = ["club", "contact", ]
+    ordering = ["club", "contact", ]
+    actions = ["export_captains", "export_primary_contacts", "export_mailings", ]
+    list_max_show_all = 500
 
 
 admin.site.register(GolfCourse, GolfCourseAdmin)
