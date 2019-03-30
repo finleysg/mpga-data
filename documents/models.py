@@ -60,7 +60,7 @@ register.generator("documents:photo:web_image", WebSpec)
 class Tag(models.Model):
 
     class Meta:
-        ordering = ["tag", ]
+        ordering = ["name", ]
 
     name = models.CharField(verbose_name="Tag", max_length=40)
 
