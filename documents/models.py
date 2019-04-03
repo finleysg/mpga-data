@@ -8,26 +8,32 @@ from simple_history.models import HistoricalRecords
 from documents.managers import PhotoManager
 from events.models import Tournament
 
-DOCUMENT_TYPE_CHOICES = (
-    ("Admin", "Admin"),
-    ("ByLaws", "ByLaws"),
-    ("Club Registration", "Club Registration"),
-    ("Registration", "Registration"),
-    ("Results", "Results"),
-    ("Meeting", "Meeting"),
-    ("Match Play", "Match Play"),
-    ("Match Play Brackets", "Match Play Brackets"),
+CATEGORY_CHOICES = (
+    ("Banquet", "Banquet"),
+    ("Communication", "Communication"),
     ("Financial", "Financial"),
-    ("Communications", "Communications"),
-    ("Other", "Other")
+    ("Match Play", "Match Play"),
+    ("Meeting", "Meeting"),
+    ("Organization", "Organization"),
+    ("Tournament", "Tournament"),
 )
 
-PHOTO_TYPE_CHOICES = (
-    ("Committee", "Committee"),
-    ("Golf Course", "Golf Course"),
-    ("Tournament Winners", "Tournament Winners"),
-    ("Tournament Photos", "Tournament Photos"),
-    ("Other", "Other")
+DOCUMENT_TYPE_CHOICES = (
+    ("Admin", "Admin"),
+    ("Agenda", "Agenda"),
+    ("Brackets", "Brackets"),
+    ("Budget", "Budget"),
+    ("ByLaws", "ByLaws"),
+    ("Contact", "Contract"),
+    ("Email", "Email"),
+    ("Minutes", "Minutes"),
+    ("Newsletter", "Newsletter"),
+    ("Other", "Other"),
+    ("Registration", "Registration"),
+    ("Results", "Results"),
+    ("Schedule", "Schedule"),
+    ("Standing Orders", "Standing Orders"),
+    ("Tax Form", "Tax Form"),
 )
 
 
@@ -69,6 +75,7 @@ class Tag(models.Model):
 
 
 class Document(models.Model):
+    category = models.CharField(verbose_name="Category", choices=CATEGORY_CHOICES, max_length=20, default="Tournament")
     document_type = models.CharField(verbose_name="Document Type", choices=DOCUMENT_TYPE_CHOICES, max_length=20)
     year = models.IntegerField(verbose_name="Golf Season", blank=True, null=True)
     title = models.CharField(verbose_name="Title", max_length=120)
@@ -89,7 +96,7 @@ class DocumentTag(models.Model):
 
 
 class Photo(models.Model):
-    photo_type = models.CharField(verbose_name="Type", choices=PHOTO_TYPE_CHOICES, max_length=20)
+    category = models.CharField(verbose_name="Category", choices=CATEGORY_CHOICES, max_length=20, default="Tournament")
     year = models.IntegerField(verbose_name="Golf Season", default=0)
     caption = models.CharField(verbose_name="Caption", max_length=240, blank=True)
     tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, null=True, blank=True, on_delete=DO_NOTHING, related_name="photos")

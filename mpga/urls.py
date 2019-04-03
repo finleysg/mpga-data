@@ -46,6 +46,8 @@ urlpatterns = [
     path('', include('drfpasswordless.urls')),
     url(r"^api/", include(router.urls)),
     url(r"^api/roles/", club_views.club_roles),
+    url(r"^api/documents/categories/", document_views.document_categories),
+    url(r"^api/documents/types/", document_views.document_types),
     url(r"^api/club-validation/(?P<club_id>[0-9]+)/$", club_views.club_validation_messages),
     url(r"^api/club-membership/(?P<club_id>[0-9]+)/$", club_views.pay_club_membership),
     url(r"^api/clubs/validate-contact/(?P<club_id>[0-9]+)/$", club_views.is_club_contact),

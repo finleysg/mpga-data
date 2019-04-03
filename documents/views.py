@@ -64,3 +64,17 @@ def random_photo(request, tournament, year):
 def available_years(request, tournament):
     years = Photo.objects.available_years(tournament)
     return Response(years)
+
+
+@api_view(('GET',))
+@permission_classes((permissions.AllowAny,))
+def document_categories(request):
+    categories = Document._meta.get_field('category').choices
+    return Response([c[0] for c in categories])
+
+
+@api_view(('GET',))
+@permission_classes((permissions.AllowAny,))
+def document_types(request):
+    types = Document._meta.get_field('document_type').choices
+    return Response([t[0] for t in types])
