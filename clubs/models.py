@@ -149,7 +149,7 @@ class Club(models.Model):
         ordering = ["name", ]
 
     name = models.CharField(verbose_name="Club Name", max_length=200)
-    short_name = models.CharField(verbose_name="Short Name", max_length=50, blank=True, null=True)
+    system_name = models.CharField(verbose_name="System name", max_length=50, blank=True, null=True)
     golf_course = models.ForeignKey(verbose_name="Home Course", blank=True, null=True, to=GolfCourse, on_delete=models.DO_NOTHING)
     website = models.CharField(verbose_name="Website", max_length=300, blank=True)
     type_2 = models.BooleanField(verbose_name="Type 2", default=False)

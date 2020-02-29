@@ -134,7 +134,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "short_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
 
     def update(self, instance, validated_data):
 
@@ -158,7 +158,7 @@ class PublicClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "short_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
 
 
 class SimpleClubSerializer(serializers.ModelSerializer):
@@ -167,7 +167,7 @@ class SimpleClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "short_name", "golf_course", "website", "type_2", "notes", "size", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "type_2", "notes", "size", )
 
 
 class MembershipSerializer(serializers.ModelSerializer):

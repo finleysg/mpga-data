@@ -23,8 +23,8 @@ class GolfCourseViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class ContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
-        is_edit = self.request.query_params.get("edit", False)
-        if is_edit or self.request.user.is_authenticated:
+        # is_edit = self.request.query_params.get("edit", False)
+        if self.request.user.is_authenticated:
             return ContactSerializer
         else:
             return PublicContactSerializer
@@ -33,10 +33,13 @@ class ContactViewSet(viewsets.ModelViewSet):
         queryset = Contact.objects.all()
         club = self.request.query_params.get("club", None)
         contact_type = self.request.query_params.get("type", None)
+        pattern = self.request.query_params.get("pattern", None)
         if club is not None:
             queryset = queryset.filter(club_id=club)
         if contact_type is not None:
             queryset = queryset.filter(contact_type=contact_type)
+        if pattern is not None:
+            queryset = queryset.filter(last_name__icontains=pattern) | queryset.filter(first_name__icontains=pattern)
         return queryset.order_by("last_name", "first_name", )
 
 
@@ -55,22 +58,32 @@ class ClubContactViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class ClubViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
-        is_edit = self.request.query_params.get("edit", False)
-        if is_edit or self.request.user.is_authenticated:
-            return ClubSerializer
-        elif self.action == 'list':
-            return SimpleClubSerializer
+        system_name = self.request.query_params.get("name", None)
+        if self.action == 'list':
+            if system_name is not None:
+                if self.request.user.is_authenticated:
+                    return ClubSerializer
+                else:
+                    return PublicClubSerializer
+            else:
+                return SimpleClubSerializer
         else:
-            return PublicClubSerializer
+            if self.request.user.is_authenticated:
+                return ClubSerializer
+            else:
+                return PublicClubSerializer
 
     def get_queryset(self):
         queryset = Club.objects.all()
         is_by_user = self.request.query_params.get("user", False)
         has_team = self.request.query_params.get("has_team", False)
+        system_name = self.request.query_params.get("name", False)
         if is_by_user:
             queryset = queryset.filter(club_contacts__user=self.request.user)
         if has_team:
             queryset = queryset.filter(teams__isnull=False).distinct()
+        if system_name:
+            queryset = queryset.filter(system_name=system_name)
         return queryset
 
 
@@ -142,6 +155,11 @@ class MatchPlayResultViewSet(viewsets.ModelViewSet):
 @api_view(('GET',))
 @permission_classes((permissions.AllowAny,))
 def club_roles(request):
+    pattern = request.query_params.get("pattern", None)
+    if pattern is not None:
+        roles = ClubContactRole._meta.get_field('role').choices
+        return Response([r[0] for r in roles if pattern.lower() in r[0].lower()])
+
     roles = ClubContactRole._meta.get_field('role').choices
     return Response([r[0] for r in roles])
 

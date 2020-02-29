@@ -27,11 +27,9 @@ class AwardSerializer(serializers.ModelSerializer):
 
 
 class TournamentSerializer(serializers.ModelSerializer):
-    winners = TournamentWinnerSerializer(many=True)
-
     class Meta:
         model = Tournament
-        fields = ("id", "name", "description", "winners", )
+        fields = ("id", "name", "system_name", "description", )
 
 
 class EventChairSerializer(serializers.ModelSerializer):
@@ -87,6 +85,7 @@ class EventLinkSerializer(serializers.ModelSerializer):
 class EventDetailSerializer(serializers.ModelSerializer):
 
     location = GolfCourseSerializer()
+    tournament = TournamentSerializer()
     policies = EventPolicySerializer(many=True)
     chairs = EventChairSerializer(many=True)
     player_points = EventPointsSerializer(many=True)
@@ -96,7 +95,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "location", "name", "description", "rounds", "short_name",
+        fields = ("id", "location", "tournament", "name", "description", "rounds", "short_name",
                   "minimum_signup_group_size", "maximum_signup_group_size", "tournament",
                   "registration_type", "notes", "event_type",
                   "start_date", "registration_start", "registration_end", "early_registration_end",
@@ -107,10 +106,11 @@ class EventDetailSerializer(serializers.ModelSerializer):
 class SimpleEventSerializer(serializers.ModelSerializer):
 
     location = GolfCourseSerializer()
+    tournament = TournamentSerializer()
     links = EventLinkSerializer(many=True)
 
     class Meta:
         model = Event
-        fields = ("id", "location", "name", "description", "rounds", "short_name",
+        fields = ("id", "location", "tournament", "name", "description", "rounds", "short_name",
                   "registration_type", "event_type", "registration_maximum", "links",
                   "start_date", "registration_start", "registration_end", "early_registration_end", )

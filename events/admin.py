@@ -76,8 +76,8 @@ class AwardAdmin(admin.ModelAdmin):
 
 
 class TournamentAdmin(admin.ModelAdmin):
-    fields = ["name", "description", ]
-    list_display = ["name", ]
+    fields = ["name", "system_name", "description", ]
+    list_display = ["name", "system_name", ]
     save_on_top = True
 
 

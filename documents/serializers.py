@@ -2,6 +2,13 @@ from .models import *
 from rest_framework import serializers
 
 
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = ("id", "name", )
+
+
 class DocumentTagSerializer(serializers.ModelSerializer):
 
     tag = serializers.CharField(source="tag.name")
@@ -23,6 +30,9 @@ class PhotoTagSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
 
     tags = DocumentTagSerializer(many=True, required=False)
+    # tournament = serializers.IntegerField(required=False, allow_null=True)
+    created_by = serializers.CharField(read_only=True)
+    last_update = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Document
@@ -35,15 +45,16 @@ class DocumentSerializer(serializers.ModelSerializer):
         title = validated_data.pop("title")
         document_type = validated_data.pop("document_type")
         file = validated_data.pop("file")
-        created_by = self.context["request"].user
+        created_by = "test"  # self.context["request"].user
 
         doc = Document(year=year, title=title, document_type=document_type, file=file, tournament=tournament, created_by=created_by)
         doc.save()
 
-        for tag in tags.split("|"):
-            t, created = Tag.objects.get_or_create(name=tag)
-            dt = DocumentTag(document=doc, tag=t)
-            dt.save()
+        if tags is not None:
+            for tag in tags.split("|"):
+                t, created = Tag.objects.get_or_create(name=tag)
+                dt = DocumentTag(document=doc, tag=t)
+                dt.save()
 
         return doc
 

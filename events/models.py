@@ -56,11 +56,12 @@ class AwardWinner(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(verbose_name="Tournament Name", max_length=100)
+    system_name = models.CharField(verbose_name="System name", max_length=20, blank=True, null=True)
     description = models.TextField(verbose_name="Description")
 
     class Meta:
-        verbose_name = 'Competition'
-        verbose_name_plural = 'Competitions'
+        verbose_name = 'Tournament'
+        verbose_name_plural = 'Tournaments'
 
     def __str__(self):
         return self.name
@@ -68,7 +69,7 @@ class Tournament(models.Model):
 
 class TournamentWinner(models.Model):
     year = models.IntegerField(verbose_name="Year")
-    tournament = models.ForeignKey(verbose_name="Championship", to=Tournament, on_delete=DO_NOTHING, related_name="winners")
+    tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, on_delete=DO_NOTHING, related_name="winners")
     location = models.CharField(verbose_name="Location", max_length=100)
     winner = models.CharField(verbose_name="Winner", max_length=100)
     winner_club = models.CharField(verbose_name="Club", max_length=100)
@@ -81,8 +82,8 @@ class TournamentWinner(models.Model):
     notes = models.CharField(verbose_name="Notes", blank=True, null=True, max_length=140)
 
     class Meta:
-        verbose_name = 'Competition Winner'
-        verbose_name_plural = 'Competition Winners'
+        verbose_name = 'Tournament Winner'
+        verbose_name_plural = 'Tournament Winners'
         ordering = ["-year", ]
 
     def __str__(self):

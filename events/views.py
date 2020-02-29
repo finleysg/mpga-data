@@ -41,13 +41,13 @@ class TournamentViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentSerializer
 
     def get_queryset(self):
-        """ Optionally filter by year
+        """ Optionally filter by name
         """
         queryset = Tournament.objects.all()
         name = self.request.query_params.get('name', None)
 
         if name is not None:
-            queryset = queryset.filter(name=name)
+            queryset = queryset.filter(system_name=name)
 
         return queryset
 
@@ -61,7 +61,7 @@ class EventLinkViewSet(viewsets.ModelViewSet):
         tournament = self.request.query_params.get("tournament", None)
 
         if tournament is not None:
-            queryset = queryset.filter(event__tournament__id=tournament)
+            queryset = queryset.filter(event__tournament__system_name=tournament)
             # baked in assumption: just "history-like" links, not operational links
             queryset = queryset.exclude(link_type="Tee Times").exclude(link_type="Registration")
 
@@ -71,4 +71,14 @@ class EventLinkViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class TournamentWinnerViewSet(viewsets.ModelViewSet):
     serializer_class = TournamentWinnerSerializer
-    queryset = TournamentWinner.objects.all()
+
+    def get_queryset(self):
+        """ Optionally filter by name
+        """
+        queryset = TournamentWinner.objects.all()
+        name = self.request.query_params.get('name', None)
+
+        if name is not None:
+            queryset = queryset.filter(tournament__system_name=name)
+
+        return queryset

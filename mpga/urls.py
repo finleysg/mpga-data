@@ -41,6 +41,7 @@ router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
 router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
 router.register(r"pages", page_views.LandingPageViewSet, "pages")
 router.register(r"policies", policy_views.PolicyViewSet, "policies")
+router.register(r"tags", document_views.TagViewSet, "tags")
 
 urlpatterns = [
     path('', include('drfpasswordless.urls')),

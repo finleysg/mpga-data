@@ -10,6 +10,7 @@ from events.models import Tournament
 
 DOCUMENT_TYPE_CHOICES = (
     ("Admin", "Admin"),
+    ("Application", "Application"),
     ("ByLaws", "ByLaws"),
     ("Club Registration", "Club Registration"),
     ("Registration", "Registration"),
