@@ -3,6 +3,8 @@ import logging
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from datetime import date
+
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -10,8 +12,10 @@ from rest_framework.response import Response
 from clubs.validation import check_club
 from communication.email import send_dues_confirmation
 from core.models import SeasonSettings
-from core.payments import stripe_charge
+from core.payments import get_payment_intent, unpack_stripe_event
 from .serializers import *
+
+logger = logging.getLogger(__name__)
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
@@ -32,12 +36,12 @@ class ContactViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Contact.objects.all()
         club = self.request.query_params.get("club", None)
-        contact_type = self.request.query_params.get("type", None)
+        email = self.request.query_params.get("email", None)
         pattern = self.request.query_params.get("pattern", None)
         if club is not None:
             queryset = queryset.filter(club_id=club)
-        if contact_type is not None:
-            queryset = queryset.filter(contact_type=contact_type)
+        if email is not None:
+            queryset = queryset.filter(email=email)
         if pattern is not None:
             queryset = queryset.filter(last_name__icontains=pattern) | queryset.filter(first_name__icontains=pattern)
         return queryset.order_by("last_name", "first_name", )
@@ -78,12 +82,15 @@ class ClubViewSet(viewsets.ModelViewSet):
         is_by_user = self.request.query_params.get("user", False)
         has_team = self.request.query_params.get("has_team", False)
         system_name = self.request.query_params.get("name", False)
+        pattern = self.request.query_params.get("pattern", False)
         if is_by_user:
             queryset = queryset.filter(club_contacts__user=self.request.user)
         if has_team:
             queryset = queryset.filter(teams__isnull=False).distinct()
         if system_name:
             queryset = queryset.filter(system_name=system_name)
+        if pattern:
+            queryset = queryset.filter(name__icontains=pattern)
         return queryset
 
 
@@ -121,13 +128,16 @@ class TeamViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(year=year)
         if club is not None:
             queryset = queryset.filter(club=club)
-        return queryset
+        return queryset.order_by("is_senior", "group_name", "club__name", )
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class CommitteeViewSet(viewsets.ModelViewSet):
     serializer_class = CommitteeSerializer
-    queryset = Committee.objects.all()
+
+    def get_queryset(self):
+        queryset = Committee.objects.all()
+        return queryset.order_by("contact__last_name",)
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
@@ -153,6 +163,22 @@ class MatchPlayResultViewSet(viewsets.ModelViewSet):
 
 
 @api_view(('GET',))
+@permission_classes((permissions.IsAuthenticated,))
+def contact_roles(request):
+    email = request.query_params.get("email", None)
+    if email is None:
+        return Response([])
+
+    ec = Committee.objects.filter(contact__email=email).values("id")
+    cc = ClubContact.objects.filter(contact__email=email).values("club__system_name")
+    data = {
+        "committee": list(ec),
+        "club": list(cc),
+    }
+    return Response(data=data)
+
+
+@api_view(('GET',))
 @permission_classes((permissions.AllowAny,))
 def club_roles(request):
     pattern = request.query_params.get("pattern", None)
@@ -164,50 +190,58 @@ def club_roles(request):
     return Response([r[0] for r in roles])
 
 
-@api_view(("GET",))
+@api_view(("GET", ))
 @permission_classes((permissions.AllowAny,))
-def club_validation_messages(request, club_id):
+def get_club_dues_intent(request, club_id):
     club = get_object_or_404(Club, pk=club_id)
-    messages = check_club(club)
-    return Response(messages)
-
-
-@api_view(("GET",))
-@permission_classes((permissions.AllowAny,))
-def is_club_contact(request, club_id):
-    club = get_object_or_404(Club, pk=club_id)
-    email = request.query_params.get("email", None)
-    if email:
-        try:
-            club.club_contacts.get(contact__email=email)
-            return Response(True)
-        except ObjectDoesNotExist:
-            return Response(False)
-    else:
-        return Response(False)
-
-
-@api_view(("POST",))
-@permission_classes((permissions.IsAuthenticated,))
-def pay_club_membership(request, club_id):
-    club = get_object_or_404(Club, pk=club_id)
-    year = request.data.get("year", None)
-    token = request.data.get("token", None)
-
-    # process payment via Stripe
     config = SeasonSettings.objects.current_settings()
-    description = "{} membership dues for {}".format(year, club.name)
-    charge = stripe_charge(request.user, token, description, int(100 * config.membership_dues))
+    intent = get_payment_intent(int(100 * config.membership_dues), club)
+    return Response(data=intent.client_secret)
+
+
+# This is a webhook registered with Stripe
+@csrf_exempt
+@api_view(("POST",))
+@permission_classes((permissions.AllowAny,))
+def club_dues_complete(request):
+    payload = request.body
+    event = unpack_stripe_event(payload)
+
+    # Handle the event
+    if event is None:
+        return Response(status=400)
+    elif event.type == 'payment_intent.created':
+        logger.info("Payment created: " + event.stripe_id)
+    elif event.type == 'payment_intent.canceled':
+        logger.warning("Payment canceled: " + event.stripe_id)
+    elif event.type == 'payment_intent.payment_failed':
+        logger.error("Payment failure: " + event.stripe_id)
+    elif event.type == 'payment_intent.succeeded':
+        payment_intent = event.data.object
+        handle_club_dues_complete(payment_intent)
+    elif event.type == 'payment_method.attached':
+        logger.info("Payment attached: " + event.stripe_id)
+    elif event.type == 'charge.succeeded':
+        logger.info("Charge succeeded: " + event.stripe_id)
+    else:
+        logger.warning("Unexpected Stripe callback: " + event.type)
+        # return Response(status=400)
+
+    return Response(status=204)
+
+
+def handle_club_dues_complete(payment_intent):
+    club_id = payment_intent.metadata.get("club_id")
+    club = get_object_or_404(Club, pk=club_id)
+    config = SeasonSettings.objects.current_settings()
+    year = config.member_club_year
 
     # create our membership object
-    mem = Membership(year=year, club=club, payment_date=date.today(), payment_type="OL", payment_code=charge.id)
+    mem = Membership(year=year, club=club, payment_date=date.today(), payment_type="OL", payment_code=payment_intent.id)
     mem.save()
 
     try:
         send_dues_confirmation(year, club)
     except Exception as exc:
-        logger = logging.getLogger(__name__)
-        logger.error(exc, extra={"request": request})
-
-    serializer = MembershipSerializer(mem, context={"request": request})
-    return Response(serializer.data)
+        logger.error("Failed to send membership confirmation")
+        logger.error(exc)

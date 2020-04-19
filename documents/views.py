@@ -30,14 +30,19 @@ class DocumentViewSet(viewsets.ModelViewSet):
         queryset = Document.objects.all()
         year = self.request.query_params.get('year', None)
         tournament = self.request.query_params.get('tournament', None)
-        doc_type = self.request.query_params.get('type', None)
+        doc_types = self.request.query_params.get('type', None)
+        tags = self.request.query_params.get('tags', None)
 
         if year is not None:
             queryset = queryset.filter(year=year)
         if tournament is not None:
             queryset = queryset.filter(tournament=tournament)
-        if doc_type is not None:
-            queryset = queryset.filter(document_type=doc_type)
+        if doc_types is not None:
+            queryset = queryset.filter(document_type__icontains=doc_types)
+        if tags is not None and tags != "":
+            tag_set = tags.split(",")
+            for tag in tag_set:
+                queryset = queryset.filter(tags__tag__name__icontains=tag)
 
         return queryset
 
@@ -45,7 +50,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
-    parser_classes = (MultiPartParser, FormParser, )
+    # parser_classes = (MultiPartParser, FormParser, )
 
     def get_queryset(self):
         """ Optionally filter by code
@@ -67,8 +72,8 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
 @api_view(("GET",))
 @permission_classes((permissions.AllowAny,))
-def random_photo(request, tournament, year):
-    photo = Photo.objects.random(tournament, year)
+def random_photo(request, tournament):
+    photo = Photo.objects.random(tournament)
     serializer = PhotoSerializer(photo, context={"request": request})
     return Response(serializer.data)
 

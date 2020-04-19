@@ -31,24 +31,10 @@ class ChairInline(admin.TabularInline):
     fields = ["chair", ]
 
 
-class DivisionInline(admin.TabularInline):
-    model = EventDivision
-    can_delete = True
-    extra = 0
-    fields = ["division", ]
-
-
-class FeeInline(admin.TabularInline):
-    model = EventFee
-    can_delete = True
-    extra = 0
-    fields = ["fee_type", "amount", "ec_only", ]
-
-
 class EventAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Basic Settings", {
-            "fields": ("name", "short_name", "location", ("event_type", "tournament", "start_date", "rounds", ), )
+            "fields": ("name", "location", ("event_type", "tournament", "start_date", "rounds", ), )
         }),
         ("Format and Notes", {
             "classes": ("wide",),
@@ -56,11 +42,10 @@ class EventAdmin(admin.ModelAdmin):
         }),
         ("Registration", {
             "fields":  ("registration_start", "early_registration_end", "registration_end", ),
-            # ("registration_maximum", "minimum_signup_group_size", "maximum_signup_group_size", ))
         }),
     )
 
-    inlines = [FeeInline, PolicyInline, DivisionInline, PointsInline, ChairInline, LinksInLine, ]
+    inlines = [PolicyInline, PointsInline, ChairInline, LinksInLine, ]
     list_display = ["name", "start_date", ]
     list_display_links = ("name", )
     list_filter = ("start_date", "event_type", )

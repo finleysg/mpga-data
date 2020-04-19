@@ -47,14 +47,14 @@ class GolfCourseAdmin(admin.ModelAdmin, ExportCsvMixin):
 class ClubAdmin(nested_admin.NestedModelAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {
-            "fields": (("name", "type_2", ), "system_name", "golf_course", "website", "size", "notes", )
+            "fields": (("name", ), "system_name", "golf_course", "website", "size", "notes", )
         }),
     )
     inlines = [ContactInline, ]
     exclude = ("contacts", )
-    list_display = ["name", "golf_course", "size", "type_2", ]
+    list_display = ["name", "system_name", "golf_course", "size", "website", ]
+    list_editable = ["system_name", "size", "website", ]
     list_display_links = ("name", )
-    list_filter = ("type_2", )
     ordering = ["name", ]
     search_fields = ["name", ]
     save_on_top = True
@@ -68,19 +68,18 @@ class ClubAdmin(nested_admin.NestedModelAdmin, ExportCsvMixin):
 class ContactAdmin(admin.ModelAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {
-            "fields": ("first_name", "last_name", "contact_type", )
+            "fields": ("first_name", "last_name", )
         }),
         ("Contact Information", {
-            "fields": ("email", "primary_phone", "alternate_phone", )
+            "fields": ("email", "send_email", "home_club", "primary_phone", "alternate_phone", )
         }),
         ("Mailing Address", {
             "fields": ("address_txt", "city", "state", "zip",)
         }),
     )
-    list_display = ["last_name", "first_name", "email", "primary_phone", "alternate_phone", "contact_type", ]
-    list_editable = ["email", "primary_phone", "alternate_phone", "contact_type", ]
+    list_display = ["last_name", "first_name", "email", "send_email", "home_club", "primary_phone", ]
+    list_editable = ["email", "home_club", "primary_phone", ]
     list_display_links = ("last_name", )
-    list_filter = ["contact_type", ]
     ordering = ["last_name", "first_name", ]
     search_fields = ["last_name", "first_name", "email", ]
     actions = ["export_as_csv", ]

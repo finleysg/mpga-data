@@ -9,8 +9,11 @@ class EventViewSet(viewsets.ModelViewSet):
     """ API endpoint to view Events
     """
     def get_serializer_class(self):
-        if self.action == 'list':
+        name = self.request.query_params.get('name', None)
+        if self.action == 'list' and name is None:
             return SimpleEventSerializer
+        elif self.action == "update":
+            return EventEditSerializer
         else:
             return EventDetailSerializer
 
@@ -18,6 +21,10 @@ class EventViewSet(viewsets.ModelViewSet):
         """ Optionally filter by year or tournament
         """
         queryset = Event.objects.all()
+
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(tournament__system_name=name)
 
         year = self.request.query_params.get('year', None)
         if year is not None:
@@ -33,7 +40,23 @@ class EventViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class AwardViewSet(viewsets.ModelViewSet):
     serializer_class = AwardSerializer
-    queryset = Award.objects.all()
+
+    def get_queryset(self):
+        """ Optionally filter by year or tournament
+        """
+        queryset = Award.objects.all()
+
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            queryset = queryset.filter(name=name)
+
+        return queryset
+
+
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+class AwardWinnerViewSet(viewsets.ModelViewSet):
+    serializer_class = AwardWinnerSerializer
+    queryset = AwardWinner.objects.all()
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
@@ -55,17 +78,19 @@ class TournamentViewSet(viewsets.ModelViewSet):
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class EventLinkViewSet(viewsets.ModelViewSet):
     serializer_class = EventLinkSerializer
+    queryset = EventLink.objects.all()
 
-    def get_queryset(self):
-        queryset = EventLink.objects.all()
-        tournament = self.request.query_params.get("tournament", None)
 
-        if tournament is not None:
-            queryset = queryset.filter(event__tournament__system_name=tournament)
-            # baked in assumption: just "history-like" links, not operational links
-            queryset = queryset.exclude(link_type="Tee Times").exclude(link_type="Registration")
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+class EventPointsViewSet(viewsets.ModelViewSet):
+    serializer_class = EventPointsSerializer
+    queryset = EventPoints.objects.all()
 
-        return queryset
+
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+class EventPolicyViewSet(viewsets.ModelViewSet):
+    serializer_class = EventPolicySerializer
+    queryset = EventPolicy.objects.all()
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))

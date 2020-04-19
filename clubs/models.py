@@ -7,6 +7,8 @@ from imagekit import ImageSpec, register
 from imagekit.models import ImageSpecField
 from pilkit.processors import ResizeToFit
 
+from clubs.managers import *
+
 STATE_CHOICES = (
     ('AL', 'Alabama'), ('AK', 'Alaska'), ('AZ', 'Arizona'), ('AR', 'Arkansas'), ('CA', 'California'), ('CO', 'Colorado'),
     ('CT', 'Connecticut'), ('DE', 'Delaware'), ('DC', 'District of Columbia'), ('FL', 'Florida'), ('GA', 'Georgia'),
@@ -22,11 +24,6 @@ STATE_CHOICES = (
 
 LOCAL_STATE_CHOICES = (
     ('IA', 'Iowa'), ('MN', 'Minnesota'), ('ND', 'North Dakota'), ('WI', 'Wisconsin')
-)
-
-CONTACT_TYPE_CHOICES = (
-    ("Men's Club", "Men's Club"),
-    ("Facilities", "Facilities"),
 )
 
 CONTACT_ROLE_CHOICES = (
@@ -96,7 +93,6 @@ class GolfCourse(models.Model):
 class Contact(models.Model):
     first_name = models.CharField(verbose_name="First Name", max_length=30)
     last_name = models.CharField(verbose_name="Last Name", max_length=30)
-    contact_type = models.CharField(verbose_name="Contact Type", max_length=20, choices=CONTACT_TYPE_CHOICES, default="Men's Club")
     primary_phone = models.CharField(verbose_name="Primary Phone", max_length=20, blank=True, null=True)
     alternate_phone = models.CharField(verbose_name="Alternate Phone", max_length=20, blank=True, null=True)
     email = models.CharField(verbose_name="Email", max_length=250, blank=True, null=True)
@@ -105,6 +101,8 @@ class Contact(models.Model):
     state = models.CharField(verbose_name="State", max_length=2, choices=STATE_CHOICES, default="MN", blank=True, null=True)
     zip = models.CharField(verbose_name="Zip Code", max_length=10, blank=True, null=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
+    send_email = models.BooleanField(verbose_name="Send Email", default=False)
+    home_club = models.CharField(verbose_name="Club Name", max_length=200, blank=True, null=True)
 
     @property
     def public_email(self):
@@ -152,10 +150,11 @@ class Club(models.Model):
     system_name = models.CharField(verbose_name="System name", max_length=50, blank=True, null=True)
     golf_course = models.ForeignKey(verbose_name="Home Course", blank=True, null=True, to=GolfCourse, on_delete=models.DO_NOTHING)
     website = models.CharField(verbose_name="Website", max_length=300, blank=True)
-    type_2 = models.BooleanField(verbose_name="Type 2", default=False)
     size = models.IntegerField(verbose_name="Number of Members", blank=True, null=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
     contacts = models.ManyToManyField(verbose_name="Contacts", to=Contact, through="ClubContact")
+
+    objects = ClubManager()
 
     def __str__(self):
         return self.name
@@ -176,6 +175,8 @@ class ClubContact(models.Model):
     is_primary = models.BooleanField(verbose_name="Primary Contact", default=False)
     use_for_mailings = models.BooleanField(verbose_name="Use for Club Mailings", default=False)
     notes = models.CharField(verbose_name="Notes", max_length=150, blank=True, null=True)
+
+    objects = ClubContactManager()
 
     def save(self, *args, **kwargs):
 
@@ -242,6 +243,8 @@ class Team(models.Model):
     is_senior = models.BooleanField(verbose_name="Senior")
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
+    objects = TeamManager()
+
     def __str__(self):
         return "{} {}: {}".format(self.year, self.group_name, self.club.name)
 
@@ -273,6 +276,8 @@ class Committee(models.Model):
     contact = models.ForeignKey(verbose_name="Contact", to=Contact, on_delete=models.DO_NOTHING)
     role = models.CharField(verbose_name="Role", max_length=40)
     home_club = models.ForeignKey(verbose_name="Home Club", to=Club, on_delete=models.DO_NOTHING)
+
+    objects = CommitteeManager()
 
     def __str__(self):
         return "{}: {} {}".format(self.role, self.contact.first_name, self.contact.last_name)

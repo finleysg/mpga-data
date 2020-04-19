@@ -58,12 +58,37 @@ class DocumentSerializer(serializers.ModelSerializer):
 
         return doc
 
+    def update(self, instance, validated_data):
+        tags = self.context["request"].data.get("tags", None)
+
+        instance.tournament = validated_data.get("tournament", instance.tournament)
+        instance.year = validated_data.get("year", instance.year)
+        instance.title = validated_data.get("title", instance.title)
+        instance.document_type = validated_data.get("document_type", instance.document_type)
+        new_file = validated_data.get("file", None)
+        if new_file is not None:
+            instance.file = new_file
+
+        instance.save()
+
+        # Delete and recreate tags.
+        DocumentTag.objects.filter(document=instance).delete()
+        if tags is not None:
+            for tag in tags.split("|"):
+                t, created = Tag.objects.get_or_create(name=tag)
+                dt = DocumentTag(document=instance, tag=t)
+                dt.save()
+
+        return instance
+
 
 class PhotoSerializer(serializers.ModelSerializer):
 
     thumbnail_url = serializers.ReadOnlyField(source="thumbnail_image.url")
     image_url = serializers.ReadOnlyField(source="web_image.url")
     tags = PhotoTagSerializer(many=True, required=False)
+    created_by = serializers.CharField(read_only=True)
+    last_update = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Photo
@@ -82,9 +107,29 @@ class PhotoSerializer(serializers.ModelSerializer):
         pic = Photo(year=year, caption=caption, photo_type=photo_type, raw_image=raw_image, tournament=tournament, created_by=created_by)
         pic.save()
 
-        for tag in tags.split("|"):
-            t, created = Tag.objects.get_or_create(name=tag)
-            pt = PhotoTag(document=pic, tag=t)
-            pt.save()
+        if tags is not None:
+            for tag in tags.split("|"):
+                t, created = Tag.objects.get_or_create(name=tag)
+                pt = PhotoTag(document=pic, tag=t)
+                pt.save()
 
         return pic
+
+    def update(self, instance, validated_data):
+        tags = self.context["request"].data.get("tags", None)
+
+        instance.tournament = validated_data.get("tournament", instance.tournament)
+        instance.year = validated_data.get("year", instance.year)
+        instance.caption = validated_data.get("caption", instance.caption)
+        instance.photo_type = validated_data.get("photo_type", instance.photo_type)
+        instance.save()
+
+        # Delete and recreate tags.
+        PhotoTag.objects.filter(document=instance).delete()
+        if tags is not None:
+            for tag in tags:
+                t, created = Tag.objects.get_or_create(name=tag.get("name"))
+                pt = PhotoTag(document=instance, tag=t)
+                pt.save()
+
+        return instance

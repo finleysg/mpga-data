@@ -1,7 +1,11 @@
 import os
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
+from djoser import utils
+from djoser.conf import settings as djoser_settings
 from templated_email import send_templated_mail
 from templated_email import InlineImage
+from templated_mail.mail import BaseEmailMessage
 
 from clubs.models import Contact
 from events.models import EventChair, Event
@@ -72,3 +76,18 @@ def send_dues_confirmation(year, club):
         template_suffix="html",
         headers={"Reply-To": "no-reply@mpga.net"}
     )
+
+
+class ActivationEmail(BaseEmailMessage):
+    template_name = "email/activation.html"
+
+    def get_context_data(self):
+        # ActivationEmail can be deleted
+        context = super().get_context_data()
+
+        user = context.get("user")
+        context["uid"] = utils.encode_uid(user.pk)
+        context["token"] = default_token_generator.make_token(user)
+        context["url"] = djoser_settings.ACTIVATION_URL.format(**context)
+        context["logo_image"] = inline_image
+        return context

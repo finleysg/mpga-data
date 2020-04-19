@@ -5,8 +5,6 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.urls import path
-from django.views.generic import TemplateView
 from rest_framework.routers import DefaultRouter
 
 from clubs import views as club_views
@@ -36,7 +34,10 @@ router.register(r"documents", document_views.DocumentViewSet, "documents")
 router.register(r"photos", document_views.PhotoViewSet, "photos")
 router.register(r"events", event_views.EventViewSet, "events"),
 router.register(r"event-links", event_views.EventLinkViewSet, "event-links"),
+router.register(r"event-points", event_views.EventPointsViewSet, "event-points"),
+router.register(r"event-policies", event_views.EventPolicyViewSet, "event-policies"),
 router.register(r"awards", event_views.AwardViewSet, "awards"),
+router.register(r"award-winners", event_views.AwardWinnerViewSet, "award-winners"),
 router.register(r"tournaments", event_views.TournamentViewSet, "tournaments"),
 router.register(r"tournament-winners", event_views.TournamentWinnerViewSet, "tournament-winners"),
 router.register(r"pages", page_views.LandingPageViewSet, "pages")
@@ -44,23 +45,18 @@ router.register(r"policies", policy_views.PolicyViewSet, "policies")
 router.register(r"tags", document_views.TagViewSet, "tags")
 
 urlpatterns = [
-    path('', include('drfpasswordless.urls')),
     url(r"^api/", include(router.urls)),
     url(r"^api/roles/", club_views.club_roles),
-    url(r"^api/club-validation/(?P<club_id>[0-9]+)/$", club_views.club_validation_messages),
-    url(r"^api/club-membership/(?P<club_id>[0-9]+)/$", club_views.pay_club_membership),
-    url(r"^api/clubs/validate-contact/(?P<club_id>[0-9]+)/$", club_views.is_club_contact),
+    url(r"^api/contact-roles/", club_views.contact_roles),
+    url(r"^api/club-dues/(?P<club_id>[0-9]+)/$", club_views.get_club_dues_intent),
+    url(r"^api/club-dues/complete/$", club_views.club_dues_complete),
+    # url(r"^api/clubs/validate-contact/(?P<club_id>[0-9]+)/$", club_views.is_club_contact),
     url(r"^api/messages/$", communication_views.ContactMessageView.as_view()),
-    url(r"^api/tournament-photos/random/(?P<tournament>[0-9]+)/(?P<year>[0-9]+)/$", document_views.random_photo),
+    url(r"^api/tournament-photos/random/(?P<tournament>[0-9]+)/$", document_views.random_photo),
     url(r"^api/tournament-photos/years/(?P<tournament>[0-9]+)/$", document_views.available_years),
     url(r"^grappelli/", include("grappelli.urls")),
     url(r"^admin/", admin.site.urls),
     url(r"^nested_admin/", include("nested_admin.urls")),
-    url(r'^report_builder/', include('report_builder.urls')),
-    url(r"^rest-auth/", include("rest_auth.urls")),
-    url(r"^rest-auth/registration/", include("rest_auth.registration.urls")),
-    # this url is used to generate a password reset email
-    url(r"^session/reset-password-confirm/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$",
-        TemplateView.as_view(template_name="password_reset_confirm.html"),
-        name="password_reset_confirm"),
+    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.authtoken')),
 ]

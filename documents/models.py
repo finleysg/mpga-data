@@ -5,21 +5,21 @@ from imagekit.models import ImageSpecField
 from pilkit.processors import ResizeToFit
 from simple_history.models import HistoricalRecords
 
-from documents.managers import PhotoManager
+from documents.managers import PhotoManager, DocumentManager
 from events.models import Tournament
 
 DOCUMENT_TYPE_CHOICES = (
-    ("Admin", "Admin"),
-    ("Application", "Application"),
     ("ByLaws", "ByLaws"),
     ("Club Registration", "Club Registration"),
     ("Registration", "Registration"),
     ("Results", "Results"),
-    ("Meeting", "Meeting"),
+    ("Agenda", "Agenda"),
+    ("Minutes", "Minutes"),
     ("Match Play", "Match Play"),
     ("Match Play Brackets", "Match Play Brackets"),
     ("Financial", "Financial"),
-    ("Communications", "Communications"),
+    ("Standing Orders", "Standing Orders"),
+    ("Tee Times", "Tee Times"),
     ("Other", "Other")
 )
 
@@ -79,6 +79,7 @@ class Document(models.Model):
     last_update = models.DateTimeField(auto_now=True)
 
     history = HistoricalRecords()
+    objects = DocumentManager()
 
     def __str__(self):
         return "{} {}: {}".format(self.year, self.document_type, self.title)

@@ -23,8 +23,8 @@ class ContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ("id", "first_name", "last_name", "contact_type", "primary_phone", "alternate_phone", "email",
-                  "address_txt", "city", "state", "zip", "notes", )
+        fields = ("id", "first_name", "last_name", "primary_phone", "alternate_phone", "email",
+                  "send_email", "home_club", "address_txt", "city", "state", "zip", "notes", )
 
 
 class PublicContactSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class PublicContactSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ("id", "first_name", "last_name", "contact_type", "primary_phone", "alternate_phone",
+        fields = ("id", "first_name", "last_name", "primary_phone", "alternate_phone", "home_club",
                   "email", "city", "notes", )
 
 
@@ -97,10 +97,11 @@ class ClubContactSerializer(serializers.ModelSerializer):
         contact = instance.contact
         contact.first_name = contact_data.get("first_name", contact.first_name)
         contact.last_name = contact_data.get("last_name", contact.last_name)
-        contact.contact_type = contact_data.get("contact_type", contact.contact_type)
         contact.primary_phone = contact_data.get("primary_phone", contact.primary_phone)
         contact.alternate_phone = contact_data.get("alternate_phone", contact.alternate_phone)
         contact.email = contact_data.get("email", contact.email)
+        contact.send_email = contact_data.get("send_email", contact.send_email)
+        contact.home_club = contact_data.get("home_club", contact.home_club)
         contact.address_txt = contact_data.get("address_txt", contact.address_txt)
         contact.city = contact_data.get("city", contact.city)
         contact.state = contact_data.get("state", contact.state)
@@ -134,7 +135,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "system_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "notes", "size", "club_contacts", )
 
     def update(self, instance, validated_data):
 
@@ -142,7 +143,6 @@ class ClubSerializer(serializers.ModelSerializer):
         # golf course is read only and changeable only in the admin site
         instance.name = validated_data.get("name", instance.name)
         instance.website = validated_data.get("website", instance.website)
-        instance.type_2 = validated_data.get("type_2", instance.type_2)
         instance.notes = validated_data.get("notes", instance.notes)
         instance.size = validated_data.get("size", instance.size)
 
@@ -158,7 +158,7 @@ class PublicClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "system_name", "golf_course", "website", "type_2", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "notes", "size", "club_contacts", )
 
 
 class SimpleClubSerializer(serializers.ModelSerializer):
@@ -167,7 +167,7 @@ class SimpleClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "system_name", "golf_course", "website", "type_2", "notes", "size", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "notes", "size", )
 
 
 class MembershipSerializer(serializers.ModelSerializer):
@@ -214,8 +214,8 @@ class MatchPlayResultSerializer(serializers.ModelSerializer):
 
 class MatchPlayResultListSerializer(serializers.ModelSerializer):
 
-    home_team_name = serializers.CharField(source="home_team.short_name")
-    away_team_name = serializers.CharField(source="away_team.short_name")
+    home_team_name = serializers.CharField(source="home_team.name")
+    away_team_name = serializers.CharField(source="away_team.name")
 
     class Meta:
         model = MatchPlayResult
@@ -225,12 +225,54 @@ class MatchPlayResultListSerializer(serializers.ModelSerializer):
 
 class CommitteeSerializer(serializers.ModelSerializer):
 
-    home_club = serializers.CharField(source="home_club.name")
-    contact = PublicContactSerializer()
+    contact = ContactSerializer()
+    home_club_name = serializers.CharField(source="home_club.name", read_only=True)
 
     class Meta:
         model = Committee
-        fields = ("id", "role", "home_club", "contact", )
+        fields = ("id", "role", "home_club", "home_club_name", "contact", )
+
+    def create(self, validated_data):
+        contact = validated_data.pop("contact")
+
+        if contact.get("id", 0) == 0:
+            contact["id"] = None  # mysql won't accept 0
+            cc_contact = Contact.objects.create(**contact)
+        else:
+            cc_contact = contact
+
+        ec = Committee.objects.create(
+            role=validated_data.get("role", None),
+            home_club=validated_data.get("home_club", None),
+            contact=cc_contact,
+        )
+
+        ec.save()
+
+        return ec
+
+    def update(self, instance, validated_data):
+        contact_data = validated_data.pop("contact")
+
+        contact = instance.contact
+        contact.first_name = contact_data.get("first_name", contact.first_name)
+        contact.last_name = contact_data.get("last_name", contact.last_name)
+        contact.primary_phone = contact_data.get("primary_phone", contact.primary_phone)
+        contact.alternate_phone = contact_data.get("alternate_phone", contact.alternate_phone)
+        contact.email = contact_data.get("email", contact.email)
+        contact.address_txt = contact_data.get("address_txt", contact.address_txt)
+        contact.city = contact_data.get("city", contact.city)
+        contact.state = contact_data.get("state", contact.state)
+        contact.zip = contact_data.get("zip", contact.zip)
+        contact.notes = contact_data.get("notes", contact.notes)
+        contact.save()
+
+        instance.role = validated_data.get("role", instance.role)
+        instance.home_club = validated_data.get("home_club", instance.home_club)
+
+        instance.save()
+
+        return instance
 
 
 class AffiliateSerializer(serializers.ModelSerializer):

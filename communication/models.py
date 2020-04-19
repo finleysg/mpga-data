@@ -26,7 +26,7 @@ class ContactMessage(models.Model):
     course = models.CharField(verbose_name="Golf course", blank=True, null=True, max_length=100)
     contact_name = models.CharField(verbose_name="Contact name", max_length=100)
     contact_email = models.CharField(verbose_name="Contact email", max_length=254)
-    contact_phone = models.CharField(verbose_name="Contact phone", max_length=20)
+    contact_phone = models.CharField(verbose_name="Contact phone", max_length=20, blank=True)
     event = models.CharField(verbose_name="Event name", blank=True, null=True, max_length=120)
     message = models.TextField(verbose_name="Message")
     message_date = models.DateTimeField(verbose_name="Message date", auto_now_add=True)

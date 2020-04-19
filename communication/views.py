@@ -5,12 +5,17 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import *
 
 from .models import Announcement, ContactMessage
-from .serializers import AnnouncementSerializer, ContactMessageSerializer
+from .serializers import *
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class AnnouncementViewSet(viewsets.ModelViewSet):
-    serializer_class = AnnouncementSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return AnnouncementListSerializer
+        else:
+            return AnnouncementDetailSerializer
 
     def get_queryset(self):
         today = timezone.now()

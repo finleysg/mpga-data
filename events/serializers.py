@@ -19,7 +19,7 @@ class TournamentWinnerSerializer(serializers.ModelSerializer):
 
 
 class AwardSerializer(serializers.ModelSerializer):
-    winners = AwardWinnerSerializer(many=True)
+    winners = AwardWinnerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Award
@@ -42,7 +42,6 @@ class EventChairSerializer(serializers.ModelSerializer):
 
 
 class EventPointsSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = EventPoints
@@ -50,32 +49,47 @@ class EventPointsSerializer(serializers.ModelSerializer):
 
 
 class EventPolicySerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(read_only=True)
     policy = PolicySerializer()
 
     class Meta:
         model = EventPolicy
         fields = ("id", "event", "policy", "order", )
 
+    def create(self, validated_data):
+        policy = validated_data.pop("policy")
 
-class EventDivisionSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(read_only=True)
+        if policy.get("id", 0) == 0:
+            policy["id"] = None  # mysql won't accept 0
+            this_policy = Policy.objects.create(**policy)
+        else:
+            this_policy = policy
 
-    class Meta:
-        model = EventDivision
-        fields = ("id", "event", "division", )
+        ep = EventPolicy.objects.create(
+            policy=this_policy,
+            event=validated_data.get("event", 0),
+            order=validated_data.get("order", 0)
+        )
+        ep.save()
 
+        return ep
 
-class EventFeeSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(read_only=True)
+    def update(self, instance, validated_data):
+        policy_data = validated_data.pop("policy")
 
-    class Meta:
-        model = EventFee
-        fields = ("id", "event", "fee_type", "amount", "ec_only", )
+        policy = instance.policy
+        policy.policy_type = policy_data.get("policy_type", policy.policy_type)
+        policy.name = policy_data.get("name", policy.name)
+        policy.title = policy_data.get("title", policy.title)
+        policy.description = policy_data.get("description", policy.description)
+        policy.save()
+
+        instance.order = validated_data.get("order", instance.order)
+        instance.save()
+
+        return instance
 
 
 class EventLinkSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = EventLink
@@ -89,18 +103,13 @@ class EventDetailSerializer(serializers.ModelSerializer):
     policies = EventPolicySerializer(many=True)
     chairs = EventChairSerializer(many=True)
     player_points = EventPointsSerializer(many=True)
-    divisions = EventDivisionSerializer(many=True)
     links = EventLinkSerializer(many=True)
-    fees = EventFeeSerializer(many=True)
 
     class Meta:
         model = Event
-        fields = ("id", "location", "tournament", "name", "description", "rounds", "short_name",
-                  "minimum_signup_group_size", "maximum_signup_group_size", "tournament",
-                  "registration_type", "notes", "event_type",
-                  "start_date", "registration_start", "registration_end", "early_registration_end",
-                  "registration_maximum", "policies", "chairs", "player_points",
-                  "divisions", "links", "fees", )
+        fields = ("id", "location", "tournament", "name", "description", "rounds", "tournament",
+                  "notes", "event_type", "start_date", "registration_start", "registration_end",
+                  "early_registration_end", "policies", "chairs", "player_points", "links", )
 
 
 class SimpleEventSerializer(serializers.ModelSerializer):
@@ -111,6 +120,13 @@ class SimpleEventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "location", "tournament", "name", "description", "rounds", "short_name",
-                  "registration_type", "event_type", "registration_maximum", "links",
+        fields = ("id", "location", "tournament", "name", "description", "rounds", "event_type", "links",
                   "start_date", "registration_start", "registration_end", "early_registration_end", )
+
+
+class EventEditSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = ("id", "location", "tournament", "name", "description", "rounds", "tournament", "notes",
+                  "event_type", "start_date", "registration_start", "registration_end", "early_registration_end", )

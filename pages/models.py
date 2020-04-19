@@ -8,6 +8,8 @@ PAGE_TYPE_CHOICES = (
     ("M", "Match Play"),
     ("C", "Member Clubs"),
     ("E", "Club Editing"),
+    ("R", "Club Registration"),
+    ("I", "Individual Registration"),
     ("CC", "Code of Conduct"),
     ("OM", "Our Mission"),
     ("EC", "Executive Committee"),

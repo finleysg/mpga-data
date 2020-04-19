@@ -1,5 +1,7 @@
 import os
 
+from django.urls import reverse_lazy
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Application definition
@@ -16,19 +18,13 @@ INSTALLED_APPS = (
     "django.contrib.sites",
     "rest_framework",
     "rest_framework.authtoken",
-    "rest_auth",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "rest_auth.registration",
-    "drfpasswordless",
+    "djoser",
     "corsheaders",
     "simple_history",
     "storages",
     "anymail",
     "imagekit",
     "nested_admin",
-    "report_builder",
     "clubs",
     "communication",
     "core",
@@ -48,13 +44,14 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
+    "csp.middleware.CSPMiddleware",
 )
 
 SITE_ID = 1
 
 ROOT_URLCONF = "mpga.urls"
 
-PASSWORD_RESET_TIMEOUT_DAYS = 1
+# PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 TEMPLATES = [
     {
@@ -83,28 +80,34 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "clubs.exception_handler.custom_exception_handler",
 }
 
-REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "core.serializers.UserDetailSerializer"
-}
-
-PASSWORDLESS_AUTH = {
-    "PASSWORDLESS_AUTH_TYPES": ["EMAIL", ],
-    "PASSWORDLESS_EMAIL_NOREPLY_ADDRESS": "noreply@mpga.net",
-    "PASSWORDLESS_REGISTER_NEW_USERS": False,
-    "PASSWORDLESS_EMAIL_TOKEN_HTML_TEMPLATE_NAME": "login_token.html",
-    'PASSWORDLESS_EMAIL_SUBJECT': "MPGA Login Code",
-    'PASSWORDLESS_EMAIL_PLAINTEXT_MESSAGE': "Enter this code to sign in to the MPGA website: %s",
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "account/reset-password/{uid}/{token}",
+    "ACTIVATION_URL": "account/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "LOGIN_FIELD": "email",
+    "DEFAULT_FROM_EMAIL": "postmaster@mpga.net",
+    "SERIALIZERS": {
+        "current_user": "core.serializers.UserDetailSerializer",
+        "user_create": "core.serializers.UserCreateSerializer",
+    },
+    # "EMAIL": {
+    #     "activation": "communication.email.ActivationEmail",
+    #     "password_reset": "djoser.email.PasswordResetEmail",
+    # }
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CSP_DEFAULT_SRC = ("'self'", '*.stripe.com', 'm.stripe.network', 'mpgagolf.s3.amazonaws.com', )
+# CSP_IMG_SRC = ("'self'", )
 
 WSGI_APPLICATION = "mpga.wsgi.application"
 
 GRAPPELLI_ADMIN_TITLE = "MPGA Administration"
 GRAPPELLI_ADMIN_URL = "/admin/"
 GRAPPELLI_INDEX_DASHBOARD = "dashboard.CustomIndexDashboard"
-
-# LOGIN_URL = "/login/"
 
 LANGUAGE_CODE = "en-us"
 
