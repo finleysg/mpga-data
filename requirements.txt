@@ -12,7 +12,7 @@ django-report-builder==6.2.2
 django-simple-history==2.6.0
 django-storages==1.7.1
 django-templated-email==2.2.0
-djangorestframework==3.9.0
+djangorestframework==3.9.1
 djoser==2.0.3
 mysqlclient==1.4.1
 Pillow==5.4.1
