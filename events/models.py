@@ -45,7 +45,7 @@ class AwardWinner(models.Model):
     year = models.IntegerField(verbose_name="Year")
     award = models.ForeignKey(verbose_name="Award", to=Award, on_delete=DO_NOTHING, related_name="winners")
     winner = models.CharField(verbose_name="Award Winner", max_length=100)
-    notes = models.CharField(verbose_name="Notes", blank=True, null=True, max_length=140)
+    notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
     class Meta:
         ordering = ["-year", ]
@@ -79,7 +79,7 @@ class TournamentWinner(models.Model):
     score = models.CharField(verbose_name="Score", max_length=20, blank=True)
     is_net = models.BooleanField(verbose_name="Score is a Net Score", default=False)
     is_match = models.BooleanField(verbose_name="Match Play", default=False)
-    notes = models.CharField(verbose_name="Notes", blank=True, null=True, max_length=140)
+    notes = models.TextField(verbose_name="Notes", blank=True, null=True)
 
     class Meta:
         verbose_name = 'Tournament Winner'
