@@ -9,6 +9,8 @@ EVENT_TYPE_CHOICES = (
     ("T", "Championship"),
     ("B", "Banquet"),
     ("M", "Meeting"),
+    ("C", "Canceled"),
+    ("P", "Postponed"),
 )
 
 REGISTRATION_TYPE_CHOICES = (
