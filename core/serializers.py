@@ -1,6 +1,7 @@
 import random
 import string
 from django.contrib.auth.models import User, Group
+from rest_framework.exceptions import ValidationError
 
 from clubs.models import Contact
 from .models import SeasonSettings
@@ -53,6 +54,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ("email", "password", "first_name", "last_name", )
 
     def create(self, validated_data):
+        email = validated_data["email"]
+        exists = User.objects.filter(email=email).exists()
+        if exists:
+            raise ValidationError("user already exists")
+
         uname = "".join([random.choice(string.ascii_lowercase) for n in range(24)])
         user = User.objects.create_user(
             username=uname,
