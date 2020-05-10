@@ -8,8 +8,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = (
     "django.contrib.contenttypes",
-    "grappelli.dashboard",
-    "grappelli",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.sessions",
@@ -104,10 +102,6 @@ CSP_DEFAULT_SRC = ("'self'", '*.stripe.com', 'm.stripe.network', 'mpgagolf.s3.am
 # CSP_IMG_SRC = ("'self'", )
 
 WSGI_APPLICATION = "mpga.wsgi.application"
-
-GRAPPELLI_ADMIN_TITLE = "MPGA Administration"
-GRAPPELLI_ADMIN_URL = "/admin/"
-GRAPPELLI_INDEX_DASHBOARD = "dashboard.CustomIndexDashboard"
 
 LANGUAGE_CODE = "en-us"
 
