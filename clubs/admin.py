@@ -21,10 +21,6 @@ class ContactInline(nested_admin.NestedTabularInline):
     can_delete = True
     extra = 0
     inlines = [ContactRoleInline, ]
-    raw_id_fields = ("contact", )
-    autocomplete_lookup_fields = {
-        "fk": ["contact", ]
-    }
 
 
 class GolfCourseAdmin(admin.ModelAdmin, ExportCsvMixin):
@@ -58,10 +54,6 @@ class ClubAdmin(nested_admin.NestedModelAdmin, ExportCsvMixin):
     ordering = ["name", ]
     search_fields = ["name", ]
     save_on_top = True
-    raw_id_fields = ("golf_course", )
-    autocomplete_lookup_fields = {
-        "fk": ["golf_course", ]
-    }
     actions = ["export_as_csv", ]
 
 
@@ -93,10 +85,6 @@ class MembershipAdmin(DefaultFilterMixIn, ExportCsvMixin):
     list_filter = ["year", "payment_type", ]
     ordering = ["club", "year", ]
     default_filters = (f"year={current_season}", )
-    raw_id_fields = ("club", )
-    autocomplete_lookup_fields = {
-        "fk": ["club", ]
-    }
     actions = ["export_as_csv", ]
 
 
@@ -109,10 +97,6 @@ class TeamAdmin(DefaultFilterMixIn, ExportCsvMixin):
     ordering = ["club", "year", ]
     default_filters = (f"year={current_season}", )
     change_list_filter_template = "admin/filter_listing.html"
-    raw_id_fields = ("club", )
-    autocomplete_lookup_fields = {
-        "fk": ["club", ]
-    }
     actions = ["export_as_csv", ]
 
 
@@ -138,10 +122,6 @@ class MatchPlayResultAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display_links = ["group_name", "match_date", ]
     list_filter = ["group_name", "match_date", "forfeit", ]
     ordering = ["group_name", "match_date", ]
-    raw_id_fields = ("home_team", "away_team", )
-    autocomplete_lookup_fields = {
-        "fk": ["home_team", "away_team", ]
-    }
     actions = ["export_as_csv", ]
 
 

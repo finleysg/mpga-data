@@ -172,11 +172,9 @@ class SimpleClubSerializer(serializers.ModelSerializer):
 
 class MembershipSerializer(serializers.ModelSerializer):
 
-    club = serializers.PrimaryKeyRelatedField(read_only=True)
-
     class Meta:
         model = Membership
-        fields = ("id", "year", "club", "payment_date", "payment_type", "payment_code", "create_date", "notes", )
+        fields = ("id", "year", "club", "payment_date", "payment_type", "payment_code", "notes", )
 
 
 class TeamSerializer(serializers.ModelSerializer):
