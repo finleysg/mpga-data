@@ -34,7 +34,7 @@ def forward_contact_message(message):
 
 def resolve_recipients(message):
     if message.message_type == "bid":
-        return ["president@mpga.net", "vice-president@mgpa.net", "treasurer@mpga.net", ]
+        return ["president@mpga.net", ]
     elif message.message_type == "tournament":
         tournament = list(Event.objects.filter(name=message.event))[-1]
         chairs = list(EventChair.objects.filter(event=tournament))
@@ -42,13 +42,13 @@ def resolve_recipients(message):
         contacts.append("tournaments@mpga.net")
         return contacts
     elif message.message_type == "match-play":
-        return ["vice-president@mgpa.net", ]
+        return ["match-play@mgpa.net", ]
     elif message.message_type == "ec":
         name = message.event.split(" ")
         contacts = Contact.objects.filter(last_name=name[1]).filter(first_name=name[0])
         return [c.email for c in contacts]
     else:
-        return ["info@mpga.net", ]
+        return ["secretary@mpga.net", ]
 
 
 def resolve_template(message):
@@ -66,7 +66,7 @@ def send_dues_confirmation(year, club):
 
     send_templated_mail(
         template_name="dues_confirmation.html",
-        from_email="postmaster@mpga.net",
+        from_email="secretary@mpga.net",
         recipient_list=[cc.email for cc in club.contacts.all() if cc.email],
         context={
             "logo_image": inline_image,
