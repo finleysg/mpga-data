@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import DO_NOTHING, CASCADE
 from imagekit import ImageSpec, register
 from imagekit.models import ImageSpecField
-from pilkit.processors import ResizeToFit
+from pilkit.processors import ResizeToFit, Transpose
 from simple_history.models import HistoricalRecords
 
 from documents.managers import PhotoManager, DocumentManager
@@ -45,13 +45,13 @@ def photo_directory_path(instance, filename):
 class ThumbnailSpec(ImageSpec):
     format = 'JPEG'
     options = {'quality': 80}
-    processors = [ResizeToFit(192, 192)]
+    processors = [Transpose(Transpose.AUTO), ResizeToFit(450, 450)]
 
 
 class WebSpec(ImageSpec):
     format = 'JPEG'
     options = {'quality': 80}
-    processors = [ResizeToFit(900, 900)]
+    processors = [Transpose(Transpose.AUTO), ResizeToFit(1200, 1200)]
 
 
 register.generator("documents:photo:thumbnail_image", ThumbnailSpec)
