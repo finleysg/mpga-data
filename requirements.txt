@@ -1,6 +1,6 @@
 boto3==1.13.6
 botocore==1.16.6
-Django==3.0.6
+Django==3.0.12
 django-anymail==7.1.0
 django-appconf==1.0.4
 django-cors-headers==3.2.1
@@ -10,7 +10,7 @@ django-nested-admin==3.3.0
 django-simple-history==2.10.0
 django-storages==1.9.1
 django-templated-email==2.3.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djoser==2.0.3
 mysqlclient==1.4.6
 Pillow==7.1.2
