@@ -128,5 +128,5 @@ class EventEditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ("id", "location", "tournament", "name", "description", "rounds", "tournament", "notes",
+        fields = ("id", "location", "tournament", "name", "description", "rounds", "notes",
                   "event_type", "start_date", "registration_start", "registration_end", "early_registration_end", )

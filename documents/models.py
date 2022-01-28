@@ -70,6 +70,10 @@ class Tag(models.Model):
 
 
 class Document(models.Model):
+
+    class Meta:
+        ordering = ["-year", "-last_update", ]
+
     document_type = models.CharField(verbose_name="Document Type", choices=DOCUMENT_TYPE_CHOICES, max_length=20)
     year = models.IntegerField(verbose_name="Golf Season", blank=True, null=True)
     title = models.CharField(verbose_name="Title", max_length=120)
