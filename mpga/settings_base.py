@@ -100,6 +100,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CSP_DEFAULT_SRC = ("'self'", '*.stripe.com', 'm.stripe.network', 'mpgagolf.s3.amazonaws.com', )
 # CSP_IMG_SRC = ("'self'", )
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 WSGI_APPLICATION = "mpga.wsgi.application"
 

@@ -1,10 +1,6 @@
-"""mpga URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.0/topics/http/urls/
-"""
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib import admin
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from clubs import views as club_views
@@ -45,16 +41,16 @@ router.register(r"policies", policy_views.PolicyViewSet, "policies")
 router.register(r"tags", document_views.TagViewSet, "tags")
 
 urlpatterns = [
-    url(r"^api/", include(router.urls)),
-    url(r"^api/roles/", club_views.club_roles),
-    url(r"^api/contact-roles/", club_views.contact_roles),
-    url(r"^api/club-dues/(?P<club_id>[0-9]+)/$", club_views.get_club_dues_intent),
-    url(r"^api/club-dues/complete/$", club_views.club_dues_complete),
-    url(r"^api/messages/$", communication_views.ContactMessageView.as_view()),
-    url(r"^api/tournament-photos/random/(?P<tournament>[0-9]+)/$", document_views.random_photo),
-    url(r"^api/tournament-photos/years/(?P<tournament>[0-9]+)/$", document_views.available_years),
-    url(r"^admin/", admin.site.urls),
-    url(r"^nested_admin/", include("nested_admin.urls")),
-    url(r'^auth/', include('djoser.urls')),
-    url(r'^auth/', include('djoser.urls.authtoken')),
+    path("api/", include(router.urls)),
+    path("api/roles/", club_views.club_roles),
+    path("api/contact-roles/", club_views.contact_roles),
+    path("api/club-dues/<int:club_id>/", club_views.get_club_dues_intent),
+    path("api/club-dues/complete/", club_views.club_dues_complete),
+    path("api/messages/", communication_views.ContactMessageView.as_view()),
+    path("api/tournament-photos/random/<int:tournament>/", document_views.random_photo),
+    path("api/tournament-photos/years/<int:tournament>/", document_views.available_years),
+    path("admin/", admin.site.urls),
+    path("nested_admin/", include("nested_admin.urls")),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.authtoken")),
 ]
