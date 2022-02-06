@@ -16,6 +16,7 @@ admin.site.site_header = "MPGA Administration"
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r"courses", club_views.GolfCourseViewSet, "courses")
+router.register(r"roles", club_views.ClubRoleViewSet, "roles")
 router.register(r"contacts", club_views.ContactViewSet, "contacts")
 router.register(r"club-contacts", club_views.ClubContactViewSet, "club-contacts")
 router.register(r"clubs", club_views.ClubViewSet, "clubs")
@@ -42,7 +43,6 @@ router.register(r"tags", document_views.TagViewSet, "tags")
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    path("api/roles/", club_views.club_roles),
     path("api/contact-roles/", club_views.contact_roles),
     path("api/club-dues/<int:club_id>/", club_views.get_club_dues_intent),
     path("api/club-dues/complete/", club_views.club_dues_complete),

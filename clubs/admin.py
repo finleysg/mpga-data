@@ -135,6 +135,14 @@ class ClubContactAdmin(admin.ModelAdmin, ExportClubContactsMixin):
     list_max_show_all = 500
 
 
+@admin.register(ClubRole)
+class ClubRoleAdmin(admin.ModelAdmin):
+    fields = ["name", ]
+    list_display = ["name", ]
+    list_display_links = ["name", ]
+    ordering = ["name", ]
+
+
 admin.site.register(GolfCourse, GolfCourseAdmin)
 admin.site.register(Club, ClubAdmin)
 admin.site.register(Contact, ContactAdmin)

@@ -12,6 +12,13 @@ class GolfCourseSerializer(serializers.ModelSerializer):
                   "logo_url", "notes", )
 
 
+class ClubRoleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClubRole
+        fields = ("id", "name", )
+
+
 class SimpleGolfCourseSerializer(serializers.ModelSerializer):
 
     class Meta:

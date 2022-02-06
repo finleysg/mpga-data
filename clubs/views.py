@@ -25,6 +25,12 @@ class GolfCourseViewSet(viewsets.ModelViewSet):
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+class ClubRoleViewSet(viewsets.ModelViewSet):
+    serializer_class = ClubRoleSerializer
+    queryset = ClubRole.objects.all()
+
+
+@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class ContactViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         # is_edit = self.request.query_params.get("edit", False)

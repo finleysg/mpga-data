@@ -26,24 +26,6 @@ LOCAL_STATE_CHOICES = (
     ('IA', 'Iowa'), ('MN', 'Minnesota'), ('ND', 'North Dakota'), ('WI', 'Wisconsin')
 )
 
-CONTACT_ROLE_CHOICES = (
-    ("Director of Golf", "Director of Golf"),
-    ("Event Director", "Event Director"),
-    ("General Manager", "General Manager"),
-    ("Handicap Chair", "Handicap Chair"),
-    ("Manager", "Manager"),
-    ("Match Play Captain", "Match Play Captain"),
-    ("Men's Club Contact", "Men's Club Contact"),
-    ("Men's Club President", "Men's Club President"),
-    ("Men's Club Secretary", "Men's Club Secretary"),
-    ("Men's Club Treasurer", "Men's Club Treasurer"),
-    ("Owner", "Owner"),
-    ("PGA Professional", "PGA Professional"),
-    ("Sr. Match Play Captain", "Sr. Match Play Captain"),
-    ("Superintendent", "Superintendent"),
-    ("Other", "Other"),
-)
-
 PAYMENT_TYPE_CHOICES = (
     ("CK", "Check"),
     ("OL", "Online"),
@@ -88,6 +70,17 @@ class GolfCourse(models.Model):
     @staticmethod
     def autocomplete_search_fields():
         return ("name__icontains", )
+
+
+class ClubRole(models.Model):
+
+    class Meta:
+        ordering = ["name", ]
+
+    name = models.CharField(verbose_name="Name", max_length=30)
+
+    def __str__(self):
+        return self.name
 
 
 class Contact(models.Model):
@@ -214,7 +207,7 @@ class ClubContact(models.Model):
 
 class ClubContactRole(models.Model):
     club_contact = models.ForeignKey(verbose_name="Club Contact", to=ClubContact, on_delete=models.CASCADE, related_name="roles")
-    role = models.CharField(verbose_name="Role", max_length=30, choices=CONTACT_ROLE_CHOICES)
+    role = models.CharField(verbose_name="Role", max_length=30)
 
     def __str__(self):
         return "{} {}: {}".format(self.club_contact.contact.first_name, self.club_contact.contact.last_name, self.role)
