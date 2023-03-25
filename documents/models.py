@@ -20,7 +20,8 @@ DOCUMENT_TYPE_CHOICES = (
     ("Financial", "Financial"),
     ("Standing Orders", "Standing Orders"),
     ("Tee Times", "Tee Times"),
-    ("Other", "Other")
+    ("Other", "Other"),
+    ("Hard Card", "Hard Card")
 )
 
 PHOTO_TYPE_CHOICES = (
