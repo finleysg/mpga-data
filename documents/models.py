@@ -79,7 +79,7 @@ class Document(models.Model):
     year = models.IntegerField(verbose_name="Golf Season", blank=True, null=True)
     title = models.CharField(verbose_name="Title", max_length=120)
     tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, null=True, blank=True, on_delete=DO_NOTHING, related_name="documents")
-    file = models.FileField(verbose_name="File", upload_to=document_directory_path)
+    file = models.FileField(verbose_name="File", upload_to=document_directory_path, null=True)
     created_by = models.CharField(verbose_name="Created By", max_length=100)
     last_update = models.DateTimeField(auto_now=True)
 

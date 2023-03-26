@@ -38,6 +38,13 @@ class DocumentSerializer(serializers.ModelSerializer):
         model = Document
         fields = ("id", "year", "title", "document_type", "file", "tournament", "created_by", "last_update", "tags", )
 
+    def validate(self, data):
+        if self.context['request'].method == 'PUT' and not data.get('file'):
+            data.pop('file', None)
+        elif self.context['request'].method == 'POST' and not data.get('file'):
+            raise Exception("A file is required.")
+        return data
+
     def create(self, validated_data):
         tags = self.context["request"].data.get("tags", None)
         tournament = validated_data.get("tournament", None)
@@ -45,7 +52,7 @@ class DocumentSerializer(serializers.ModelSerializer):
         title = validated_data.pop("title")
         document_type = validated_data.pop("document_type")
         file = validated_data.pop("file")
-        created_by = "test"  # self.context["request"].user
+        created_by = self.context["request"].user.email
 
         doc = Document(year=year, title=title, document_type=document_type, file=file, tournament=tournament, created_by=created_by)
         doc.save()
