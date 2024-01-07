@@ -143,6 +143,9 @@ class EventPoints(models.Model):
     def __str__(self):
         return "{}: {}".format(self.event.name, self.ordinal_place)
 
+    class Meta:
+        ordering = ["event", "place", ]
+
 
 class EventPolicy(models.Model):
     event = models.ForeignKey(verbose_name="Event", to=Event, on_delete=models.CASCADE, related_name="policies")
@@ -151,6 +154,9 @@ class EventPolicy(models.Model):
 
     def __str__(self):
         return "{}: {}".format(self.event.name, self.policy.name)
+
+    class Meta:
+        ordering = ["event", "order", ]
 
 
 class EventLink(models.Model):
