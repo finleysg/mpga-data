@@ -15,6 +15,7 @@ PAGE_TYPE_CHOICES = (
     ("EC", "Executive Committee"),
     ("MP", "Match Play Signup"),
     ("FQ", "FAQ"),
+    ("PP", "Past Presidents"),
 )
 
 

@@ -21,7 +21,8 @@ DOCUMENT_TYPE_CHOICES = (
     ("Standing Orders", "Standing Orders"),
     ("Tee Times", "Tee Times"),
     ("Other", "Other"),
-    ("Hard Card", "Hard Card")
+    ("Hard Card", "Hard Card"),
+    ("Past Presidents", "Past Presidents"),
 )
 
 PHOTO_TYPE_CHOICES = (
