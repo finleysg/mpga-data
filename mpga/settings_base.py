@@ -6,6 +6,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Application definition
 
+SITE_ID = 1
+
 INSTALLED_APPS = (
     "django.contrib.contenttypes",
     "django.contrib.admin",
@@ -42,14 +44,13 @@ MIDDLEWARE = (
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
-    "csp.middleware.CSPMiddleware",
+    "core.middleware.auth_token",
 )
 
-SITE_ID = 1
-
-ROOT_URLCONF = "mpga.urls"
-
-# PASSWORD_RESET_TIMEOUT_DAYS = 1
+AUTHENTICATION_BACKENDS = [
+    "djoser.auth_backends.LoginFieldBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 TEMPLATES = [
     {
@@ -70,12 +71,11 @@ TEMPLATES = [
 ]
 
 REST_FRAMEWORK = {
-    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
     ),
-    "EXCEPTION_HANDLER": "clubs.exception_handler.custom_exception_handler",
+    "EXCEPTION_HANDLER": "core.exception_handler.custom_exception_handler",
 }
 
 DJOSER = {
@@ -90,17 +90,11 @@ DJOSER = {
         "current_user": "core.serializers.UserDetailSerializer",
         "user_create": "core.serializers.UserCreateSerializer",
     },
-    # "EMAIL": {
-    #     "activation": "communication.email.ActivationEmail",
-    #     "password_reset": "djoser.email.PasswordResetEmail",
-    # }
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
-
-CSP_DEFAULT_SRC = ("'self'", '*.stripe.com', 'm.stripe.network', 'mpgagolf.s3.amazonaws.com', )
-# CSP_IMG_SRC = ("'self'", )
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+ROOT_URLCONF = "mpga.urls"
 
 WSGI_APPLICATION = "mpga.wsgi.application"
 
@@ -108,9 +102,9 @@ LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "America/Chicago"
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 

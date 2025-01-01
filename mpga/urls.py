@@ -52,5 +52,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("nested_admin/", include("nested_admin.urls")),
     path("auth/", include("djoser.urls")),
-    path("auth/", include("djoser.urls.authtoken")),
+    path("auth/token/login/", core_views.TokenCreateView.as_view(), name="login"),
+    path("auth/token/logout/", core_views.TokenDestroyView.as_view(), name="logout"),
 ]
