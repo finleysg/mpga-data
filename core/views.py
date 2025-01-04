@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import djoser.views
 from djoser import utils
@@ -14,10 +14,22 @@ from .serializers import SettingsSerializer
 
 
 is_localhost = to_bool(is_development)
+def current_season():
+    today = date.today()
+    return today.year
+
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
 class SettingsViewSet(viewsets.ModelViewSet):
-    queryset = SeasonSettings.objects.all()
+    def get_queryset(self):
+        queryset = SeasonSettings.objects.all()
+        year = self.request.query_params.get("year", None)
+        if year is not None:
+            queryset = queryset.filter(event_calendar_year=year)
+        else:
+            queryset = queryset.filter(event_calendar_year=current_season())
+        return queryset
+
     serializer_class = SettingsSerializer
 
 

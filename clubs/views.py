@@ -1,6 +1,5 @@
 import logging
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from datetime import date
 
@@ -9,13 +8,15 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
-from clubs.validation import check_club
 from communication.email import send_dues_confirmation
 from core.models import SeasonSettings
 from core.payments import get_payment_intent, unpack_stripe_event
 from .serializers import *
 
 logger = logging.getLogger(__name__)
+def current_season():
+    today = date.today()
+    return today.year
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
@@ -195,14 +196,18 @@ def club_roles(request):
     roles = ClubContactRole._meta.get_field('role').choices
     return Response([r[0] for r in roles])
 
+## PAYMENT HANDLING ##
 
-@api_view(("GET", ))
+@api_view(("POST", ))
 @permission_classes((permissions.AllowAny,))
-def get_club_dues_intent(request, club_id):
+def create_payment_intent(request, club_id):
     club = get_object_or_404(Club, pk=club_id)
+    user_email = request.data.get("email", None)
     config = SeasonSettings.objects.current_settings()
-    intent = get_payment_intent(int(100 * config.membership_dues), club)
-    return Response(data=intent.client_secret)
+
+    intent = get_payment_intent(int(100 * config.membership_dues), club, user_email)
+
+    return Response(intent, status=200)
 
 
 # This is a webhook registered with Stripe
@@ -210,28 +215,20 @@ def get_club_dues_intent(request, club_id):
 @api_view(("POST",))
 @permission_classes((permissions.AllowAny,))
 def club_dues_complete(request):
-    payload = request.body
-    event = unpack_stripe_event(payload)
+    event = unpack_stripe_event(request)
 
     # Handle the event
     if event is None:
         return Response(status=400)
-    elif event.type == 'payment_intent.created':
-        logger.info("Payment created: " + event.stripe_id)
-    elif event.type == 'payment_intent.canceled':
-        logger.warning("Payment canceled: " + event.stripe_id)
     elif event.type == 'payment_intent.payment_failed':
-        logger.error("Payment failure: " + event.stripe_id)
+        payment_intent = event.data.object
+        error = payment_intent.last_payment_error
+        logger.error(f"Payment failure: email={payment_intent.metadata.get('user_email')}, intent_id={payment_intent.id}, error={error.message}")
     elif event.type == 'payment_intent.succeeded':
         payment_intent = event.data.object
         handle_club_dues_complete(payment_intent)
-    elif event.type == 'payment_method.attached':
-        logger.info("Payment attached: " + event.stripe_id)
-    elif event.type == 'charge.succeeded':
-        logger.info("Charge succeeded: " + event.stripe_id)
     else:
-        logger.warning("Unexpected Stripe callback: " + event.type)
-        # return Response(status=400)
+        logger.debug("Unhandled event: " + event.type)
 
     return Response(status=204)
 
@@ -239,8 +236,10 @@ def club_dues_complete(request):
 def handle_club_dues_complete(payment_intent):
     club_id = payment_intent.metadata.get("club_id")
     club = get_object_or_404(Club, pk=club_id)
-    config = SeasonSettings.objects.current_settings()
-    year = config.member_club_year
+    year = current_season()
+
+    user_name = payment_intent.metadata.get("user_name")
+    logger.info(f"Completing online payment for club={club.name}, user_name={user_name}, season={year}")
 
     # create our membership object
     mem = Membership(year=year, club=club, payment_date=date.today(), payment_type="OL", payment_code=payment_intent.id)

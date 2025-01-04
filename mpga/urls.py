@@ -44,7 +44,7 @@ router.register(r"tags", document_views.TagViewSet, "tags")
 urlpatterns = [
     path("api/", include(router.urls)),
     path("api/contact-roles/", club_views.contact_roles),
-    path("api/club-dues/<int:club_id>/", club_views.get_club_dues_intent),
+    path("api/club-dues/<int:club_id>/", club_views.create_payment_intent),
     path("api/club-dues/complete/", club_views.club_dues_complete),
     path("api/messages/", communication_views.ContactMessageView.as_view()),
     path("api/tournament-photos/random/<int:tournament>/", document_views.random_photo),
