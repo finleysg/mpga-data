@@ -44,19 +44,19 @@ def photo_directory_path(instance, filename):
     return "photos/{0}/{1}".format(instance.year, filename)
 
 
-class ThumbnailSpec(ImageSpec):
+class MobileSpec(ImageSpec):
     format = 'JPEG'
     options = {'quality': 80}
-    processors = [Transpose(Transpose.AUTO), ResizeToFit(450, 450)]
+    processors = [Transpose(Transpose.AUTO), ResizeToFit(900, 900)]
 
 
 class WebSpec(ImageSpec):
     format = 'JPEG'
-    options = {'quality': 80}
-    processors = [Transpose(Transpose.AUTO), ResizeToFit(1200, 1200)]
+    options = {'quality': 90}
+    processors = [Transpose(Transpose.AUTO), ResizeToFit(1600, 1600, upscale=False)]
 
 
-register.generator("documents:photo:thumbnail_image", ThumbnailSpec)
+register.generator("documents:photo:mobile_image", MobileSpec)
 register.generator("documents:photo:web_image", WebSpec)
 
 
@@ -102,12 +102,11 @@ class Photo(models.Model):
     caption = models.CharField(verbose_name="Caption", max_length=240, blank=True)
     tournament = models.ForeignKey(verbose_name="Tournament", to=Tournament, null=True, blank=True, on_delete=DO_NOTHING, related_name="photos")
     raw_image = models.ImageField(verbose_name="Image", upload_to=photo_directory_path)
-    thumbnail_image = ImageSpecField(source="raw_image", id="documents:photo:thumbnail_image")
+    mobile_image = ImageSpecField(source="raw_image", id="documents:photo:mobile_image")
     web_image = ImageSpecField(source="raw_image", id="documents:photo:web_image")
     created_by = models.CharField(verbose_name="Created By", max_length=100)
     last_update = models.DateTimeField(auto_now=True)
 
-    history = HistoricalRecords()
     objects = PhotoManager()
 
     def __str__(self):
