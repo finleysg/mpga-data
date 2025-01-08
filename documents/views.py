@@ -1,6 +1,7 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import viewsets, permissions, pagination
 from rest_framework.decorators import permission_classes, api_view
-from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from .serializers import *
@@ -72,6 +73,10 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
         queryset = queryset.order_by("-year", "caption")
         return queryset
+
+    @method_decorator(cache_page(timeout=None, cache="images"))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
 @api_view(("GET",))
