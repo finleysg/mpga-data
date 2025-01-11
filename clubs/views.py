@@ -239,7 +239,7 @@ def club_dues_complete(request):
         payload = request.body
         sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
 
-        logger.info(f"Received webhook: {payload} with signature {sig_header}, validated with secret {webhook_secret}")
+        logger.debug(f"Received webhook: {payload} with signature {sig_header}, validated with secret {webhook_secret}")
 
         event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
 
@@ -254,7 +254,7 @@ def club_dues_complete(request):
             payment_intent = event.data.object
             handle_club_dues_complete(payment_intent)
         else:
-            logger.info("Unhandled event: " + event.type)
+            logger.debug("Unhandled event: " + event.type)
 
         return Response(status=204)
 
