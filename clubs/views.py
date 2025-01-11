@@ -1,8 +1,10 @@
 import logging
 
+import stripe
 from django.shortcuts import get_object_or_404
 from datetime import date
 
+from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, permission_classes
@@ -10,13 +12,30 @@ from rest_framework.response import Response
 
 from communication.email import send_dues_confirmation
 from core.models import SeasonSettings
-from core.payments import get_payment_intent, unpack_stripe_event
 from .serializers import *
 
+stripe.api_key = settings.STRIPE_SECRET_KEY
+webhook_secret = settings.STRIPE_WEBHOOK_SECRET
 logger = logging.getLogger(__name__)
+
 def current_season():
     today = date.today()
     return today.year
+
+
+def get_payment_intent(amount_due, club, user_email):
+    return stripe.PaymentIntent.create(
+        amount=amount_due,
+        currency='usd',
+        automatic_payment_methods={"enabled": True},
+        description='Club dues for ' + club.name,
+        metadata={
+            'club_id': str(club.id),
+            'club_name': club.name,
+            'user_email': user_email,
+        },
+        receipt_email=user_email,
+    )
 
 
 @permission_classes((permissions.IsAuthenticatedOrReadOnly,))
@@ -215,22 +234,37 @@ def create_payment_intent(request, club_id):
 @api_view(("POST",))
 @permission_classes((permissions.AllowAny,))
 def club_dues_complete(request):
-    event = unpack_stripe_event(request)
+    try:
+        # Verify and construct the Stripe event
+        payload = request.body
+        sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
 
-    # Handle the event
-    if event is None:
+        logger.info(f"Received webhook: {payload} with signature {sig_header}, validated with secret {webhook_secret}")
+
+        event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
+
+        # Handle the event
+        if event is None:
+            return Response(status=400)
+        elif event.type == 'payment_intent.payment_failed':
+            payment_intent = event.data.object
+            error = payment_intent.last_payment_error
+            logger.error(f"Payment failure: email={payment_intent.metadata.get('user_email')}, intent_id={payment_intent.id}, error={error.message}")
+        elif event.type == 'payment_intent.succeeded':
+            payment_intent = event.data.object
+            handle_club_dues_complete(payment_intent)
+        else:
+            logger.info("Unhandled event: " + event.type)
+
+        return Response(status=204)
+
+    except stripe.error.SignatureVerificationError as ve:
+        logger.error("Invalid signature in webhook")
+        logger.error(ve)
         return Response(status=400)
-    elif event.type == 'payment_intent.payment_failed':
-        payment_intent = event.data.object
-        error = payment_intent.last_payment_error
-        logger.error(f"Payment failure: email={payment_intent.metadata.get('user_email')}, intent_id={payment_intent.id}, error={error.message}")
-    elif event.type == 'payment_intent.succeeded':
-        payment_intent = event.data.object
-        handle_club_dues_complete(payment_intent)
-    else:
-        logger.debug("Unhandled event: " + event.type)
-
-    return Response(status=204)
+    except Exception as e:
+        logger.error(e)
+        return Response(status=400)
 
 
 def handle_club_dues_complete(payment_intent):
