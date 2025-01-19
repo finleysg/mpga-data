@@ -43,7 +43,7 @@ class GolfCourseAdmin(admin.ModelAdmin, ExportCsvMixin):
 class ClubAdmin(nested_admin.NestedModelAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {
-            "fields": (("name", ), "system_name", "golf_course", "website", "size", "notes", )
+            "fields": (("name", ), "system_name", "golf_course", "website", "size", "archived", "notes", )
         }),
     )
     inlines = [ContactInline, ]

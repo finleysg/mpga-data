@@ -146,6 +146,7 @@ class Club(models.Model):
     size = models.IntegerField(verbose_name="Number of Members", blank=True, null=True)
     notes = models.TextField(verbose_name="Notes", blank=True, null=True)
     contacts = models.ManyToManyField(verbose_name="Contacts", to=Contact, through="ClubContact")
+    archived = models.BooleanField(verbose_name="Archived", default=False)
 
     objects = ClubManager()
 

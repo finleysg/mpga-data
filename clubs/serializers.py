@@ -142,7 +142,7 @@ class ClubSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Club
-        fields = ("id", "name", "system_name", "golf_course", "website", "notes", "size", "club_contacts", )
+        fields = ("id", "name", "system_name", "golf_course", "website", "notes", "size", "archived", "club_contacts", )
 
     def update(self, instance, validated_data):
 
